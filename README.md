@@ -1,98 +1,193 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+> *This project has been created as part of the 42 curriculum by \<login1\>[, \<login2\>[, \<login3\>[...]]].*
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# 🚦 Dona — Road Event Signaling Platform
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> A real-time, community-driven road event signaling application — think Waze-style crowdsourced alerts with live reactions, comments, and location-based chat channels.
+
+---
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Dona** is a collaborative web platform where users can signal various types of road events (accidents, traffic jams, police controls, obstacles, etc.) on an interactive map. Each reported event accumulates community signals to validate its credibility. Users can react instantly, leave comments, and join a live geo-located chat channel specific to each incident point.
 
-## Project setup
+### Key Features
+- 📍 **Event Signaling** — Report predefined road event types at your location
+- 📊 **Signal Count & Credibility** — See how many users confirmed the same event
+- ⚡ **Instant Reactions** — React to events with quick responses (✅ still there / ❌ resolved)
+- 💬 **Event Comments** — Leave context-rich comments on any event
+- 🗨️ **Location Chat** — Each event point has a real-time discussion channel (WebSocket)
+- 🔐 **Secure Auth** — JWT-based authentication with email/password
+- 🌍 **Interactive Map** — Live map with clustered event markers
+
+---
+
+## Team Information
+
+| Member | Role(s) | Responsibilities |
+|--------|---------|-----------------|
+| TBD | Product Owner + Developer | Product vision, backlog, feature validation |
+| TBD | Project Manager + Developer | Sprint planning, task tracking, blockers |
+| TBD | Tech Lead + Developer | Architecture decisions, code reviews |
+| TBD | Developer | Feature implementation |
+| TBD | Developer | Feature implementation |
+
+---
+
+## Project Management
+
+- **Task tracking**: Trello (backend) / GitHub Issues
+- **Meetings**: Weekly sync + async on Discord
+- **Communication**: Discord
+- **Git workflow**: Feature branches + PR reviews (min. 1 reviewer)
+
+---
+
+## Technical Stack
+
+| Layer | Technology | Reason |
+|-------|-----------|--------|
+| **Backend** | NestJS (Node.js) | Structured, scalable, TypeScript-first |
+| **API Docs** | Swagger / OpenAPI | Auto-generated, used to generate frontend client |
+| **ORM** | Prisma | Type-safe queries, easy migrations, great DX |
+| **Database** | PostgreSQL | Relational, reliable, open-source |
+| **Auth** | JWT (access + refresh tokens) | Stateless, scalable |
+| **Real-time** | WebSockets (Socket.io via NestJS) | Event updates + location chat |
+| **Frontend** | Next.js (React) | SSR, routing, ecosystem |
+| **HTTP Client** | Axios + Swagger-generated client | Type-safe API consumption |
+| **Containerization** | Docker + docker-compose | Single-command deployment |
+
+---
+
+## Database Schema
+
+> See [DATABASE.md](./docs/DATABASE.md) for full ERD and field details.
+
+**Core tables:**
+- `users` — id, email, password_hash, username, avatar, role, created_at
+- `events` — id, type, latitude, longitude, description, created_by, created_at, expires_at
+- `event_signals` — id, event_id, user_id, created_at *(confirmation votes)*
+- `event_reactions` — id, event_id, user_id, type (STILL_THERE | RESOLVED), created_at
+- `event_comments` — id, event_id, user_id, content, created_at
+- `chat_messages` — id, event_id, user_id, content, created_at *(location channel)*
+- `notifications` — id, user_id, type, payload, read, created_at
+
+---
+
+## Features List
+
+| Feature | Description | Owner |
+|---------|-------------|-------|
+| User signup/login | JWT auth with email+password | TBD |
+| User profile | View/edit profile, avatar upload | TBD |
+| Event creation | Signal a road event at geolocation | TBD |
+| Event map | Interactive real-time event map | TBD |
+| Signal confirmation | Vote to confirm an event | TBD |
+| Event reactions | Quick STILL_THERE / RESOLVED reactions | TBD |
+| Event comments | Threaded comments on events | TBD |
+| Location chat | Real-time WebSocket chat per event point | TBD |
+| Notifications | In-app notifications for interactions | TBD |
+| Public API | Secured API key access + rate limiting | TBD |
+
+---
+
+## Modules
+
+> **Target: 14+ points minimum** | Major = 2pts | Minor = 1pt
+
+| # | Module | Type | Points | Status |
+|---|--------|------|--------|--------|
+| 1 | **Web — Use frameworks (frontend + backend)** | Major | 2 | [ ] |
+| 2 | **Web — Real-time features (WebSockets)** | Major | 2 | [ ] |
+| 3 | **Web — User Interaction** (chat + profile + friends) | Major | 2 | [ ] |
+| 4 | **Web — Public API** (secured key, rate limiting, 5+ endpoints, docs) | Major | 2 | [ ] |
+| 5 | **Web — ORM** (Prisma) | Minor | 1 | [ ] |
+| 6 | **Web — Notification system** | Minor | 1 | [ ] |
+| 7 | **User Management — Standard auth + profile** | Major | 2 | [ ] |
+| 8 | **User Management — 2FA** | Minor | 1 | [ ] |
+| 9 | **Devops — Health check & status page** | Minor | 1 | [ ] |
+| | **TOTAL** | | **14** | |
+
+*Bonus potential: SSR (Next.js - 1pt), Advanced search (1pt), File upload (1pt), Multiple languages (1pt)*
+
+---
+
+## Individual Contributions
+
+> To be filled as work progresses.
+
+| Member | Features / Modules | Challenges |
+|--------|-------------------|------------|
+| TBD | - | - |
+
+---
+
+## Instructions
+
+### Prerequisites
+
+- Node.js >= 24.14.0
+- pnpm >= 11.x
+- Docker + docker-compose
+- PostgreSQL (or via Docker)
+
+### Environment Setup
 
 ```bash
-$ pnpm install
+cp .env.example .env
+# Edit .env with your values
 ```
 
-## Compile and run the project
+### Run with Docker (recommended)
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+docker-compose up --build
 ```
 
-## Run tests
+### Run locally (development)
 
 ```bash
-# unit tests
-$ pnpm run test
+# Backend
+pnpm install
+pnpm run start:dev
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# API Docs available at:
+# http://localhost:3000/swagger
 ```
 
-## Deployment
+### Environment Variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@localhost:5432/dona` |
+| `JWT_SECRET` | JWT signing secret | `your-super-secret` |
+| `JWT_REFRESH_SECRET` | Refresh token secret | `your-refresh-secret` |
+| `APP_PORT` | API port | `3000` |
+| `API_KEY` | Public API key | `sk_live_...` |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
 ## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
+- [NestJS Documentation](https://docs.nestjs.com)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Socket.io Documentation](https://socket.io/docs)
+- [JWT Introduction](https://jwt.io/introduction)
+- [OpenAPI / Swagger](https://swagger.io/docs/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### AI Usage
+AI (Claude / Antigravity IDE) was used for:
+- Generating the initial project README structure and checklists
+- Suggesting database schema design patterns
+- Code review suggestions and best practices guidance
+- Documentation drafts (reviewed and adapted by team members)
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## See Also
 
-## Stay in touch
+- [CHECKLIST.md](./CHECKLIST.md) — Line-by-line subject compliance checklist
+- [BACKEND_TODO.md](./BACKEND_TODO.md) — Backend implementation tasks with Trello estimates
+- [docs/DATABASE.md](./docs/DATABASE.md) — Full ERD and database schema details
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

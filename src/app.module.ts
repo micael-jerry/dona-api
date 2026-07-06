@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { HealthModule } from './modules/health/health.module';
 import { ConfigModule } from '@nestjs/config';
 import { AppConfig } from './config/app';
-import { EnvSchema } from './config/env.schema';
+import { envSchema } from './config/env.schema';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
 	imports: [
@@ -11,7 +11,7 @@ import { EnvSchema } from './config/env.schema';
 			isGlobal: true,
 			cache: true,
 			load: [AppConfig],
-			validationSchema: EnvSchema,
+			validationSchema: envSchema,
 		}),
 		HealthModule,
 	],

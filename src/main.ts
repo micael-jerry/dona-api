@@ -14,7 +14,7 @@ function docBuilder(app: INestApplication, conf: SwaggerConfig) {
 		.build();
 
 	const document: OpenAPIObject = SwaggerModule.createDocument(app, documentObject, {
-		operationIdFactory: (_: string, methodKey: string): string => methodKey,
+		operationIdFactory: (controllerKey: string, methodKey: string): string => methodKey,
 	});
 	SwaggerModule.setup('swagger', app, document, {
 		jsonDocumentUrl: 'swagger/json',

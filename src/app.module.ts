@@ -5,15 +5,15 @@ import { AppConfig } from './config/app';
 import { EnvSchema } from './config/env.schema';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-      cache: true,
-      load: [AppConfig],
-      validationSchema: EnvSchema,
-    }),
-    HealthModule,
-  ],
+	imports: [
+		ConfigModule.forRoot({
+			envFilePath: '.env',
+			isGlobal: true,
+			cache: true,
+			load: [AppConfig],
+			validationSchema: EnvSchema,
+		}),
+		HealthModule,
+	],
 })
 export class AppModule {}

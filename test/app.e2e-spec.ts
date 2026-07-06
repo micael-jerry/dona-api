@@ -5,25 +5,22 @@ import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
 describe('HealthController (e2e)', () => {
-  let app: INestApplication<App>;
+	let app: INestApplication<App>;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+	beforeEach(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+		app = moduleFixture.createNestApplication();
+		await app.init();
+	});
 
-  it('/ping (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/ping')
-      .expect(200)
-      .expect({ message: 'pong' });
-  });
+	it('/ping (GET)', () => {
+		return request(app.getHttpServer()).get('/ping').expect(200).expect({ message: 'pong' });
+	});
 
-  afterEach(async () => {
-    await app.close();
-  });
+	afterEach(async () => {
+		await app.close();
+	});
 });

@@ -1,3 +1,3 @@
 export class Ping {
-  message!: string;
+	message!: string;
 }

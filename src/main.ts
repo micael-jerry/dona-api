@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerConfig } from './config/swagger';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 function docBuilder(app: INestApplication, conf: SwaggerConfig) {
 	const documentObject = new DocumentBuilder()
@@ -32,11 +33,13 @@ async function run() {
 		whitelist: true,
 		forbidNonWhitelisted: true,
 	});
+	const httpExceptionFilter = new HttpExceptionFilter();
 
 	app.enableCors({
 		origin: '*',
 	});
 	app.useGlobalPipes(validationPipe);
+	app.useGlobalFilters(httpExceptionFilter);
 
 	docBuilder(app, swaggerConfig);
 	await app.listen(port);

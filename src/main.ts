@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerConfig } from './config/swagger';
 
@@ -27,12 +27,19 @@ async function run() {
 	const port: number = configService.getOrThrow<number>('app.port');
 	const swaggerConfig: SwaggerConfig = configService.getOrThrow<SwaggerConfig>('swagger');
 
+	const validationPipe: ValidationPipe = new ValidationPipe({
+		transform: true,
+		whitelist: true,
+		forbidNonWhitelisted: true,
+	});
+
 	app.enableCors({
 		origin: '*',
 	});
+	app.useGlobalPipes(validationPipe);
 
-	await app.listen(port);
 	docBuilder(app, swaggerConfig);
+	await app.listen(port);
 
 	console.info(`API is running on: ${await app.getUrl()}`);
 }

@@ -13,5 +13,5 @@ export class PingRequest {
 	@IsString()
 	@MinLength(4)
 	@MaxLength(10)
-	message?: string = 'ping';
+	message?: string = 'pong';
 }

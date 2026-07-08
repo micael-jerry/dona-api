@@ -16,6 +16,7 @@ jobs:
 
     env:
       PORT: ${{ secrets.PORT }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       NODE_ENV: ${{ vars.NODE_ENV }}
 

@@ -4,6 +4,7 @@ import { appConfig } from './config/app';
 import { envSchema } from './config/env.schema';
 import { swaggerConfig } from './config/swagger';
 import { HealthModule } from './modules/health/health.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import { HealthModule } from './modules/health/health.module';
 			validationSchema: envSchema,
 		}),
 		HealthModule,
+		AuthModule,
 	],
 })
 export class AppModule {}

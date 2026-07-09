@@ -17,7 +17,7 @@ describe('HealthController (e2e)', () => {
 	});
 
 	it('/ping (GET)', () => {
-		return request(app.getHttpServer()).get('/ping').expect(200).expect({ message: 'pong' });
+		return request(app.getHttpServer()).get('/ping?message=test').expect(200).expect({ message: 'test' });
 	});
 
 	afterEach(async () => {

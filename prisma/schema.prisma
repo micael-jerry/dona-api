@@ -12,7 +12,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
+enum UserRole {
   USER
   ADMIN
 }
@@ -21,9 +21,9 @@ model User {
   id        String   @id @default(cuid())
   email     String   @unique
   pseudo    String   @unique @db.VarChar(25)
-  name      String?
-  password  String
-  role      Role     @default(USER)
+  name      String   @db.VarChar(100)
+  password  String   @db.VarChar(100)
+  role      UserRole @default(USER)
   avatar    String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

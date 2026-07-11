@@ -5,6 +5,7 @@ import { envSchema } from './config/env.schema';
 import { swaggerConfig } from './config/swagger';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { DbModule } from './db/db.module';
 
 @Module({
 	imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './modules/auth/auth.module';
 			validationSchema: envSchema,
 		}),
 		HealthModule,
+		DbModule,
 		AuthModule,
 	],
 })

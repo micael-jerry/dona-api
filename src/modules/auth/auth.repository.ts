@@ -10,4 +10,8 @@ export class AuthRepository {
 	async createUser(data: UserCreateInput): Promise<User> {
 		return this.dbService.user.create({ data });
 	}
+
+	async findUserByEmail(email: string): Promise<User> {
+		return this.dbService.user.findUniqueOrThrow({ where: { email } });
+	}
 }

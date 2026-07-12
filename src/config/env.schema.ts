@@ -7,4 +7,6 @@ export const envSchema = Joi.object({
 	DATABASE_URL: Joi.string().required(),
 	JWT_SECRET_KEY: Joi.string().required(),
 	JWT_EXPIRES_IN: Joi.string().required(),
+	RESEND_API_KEY: Joi.string().required(),
+	UI_URL: Joi.string().required(),
 });

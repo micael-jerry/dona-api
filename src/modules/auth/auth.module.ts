@@ -6,9 +6,10 @@ import { HashingModule } from '../../common/hashing/hashing.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthUtil } from './auth.util';
+import { MailerModule } from '../mailer/mailer.module';
 
 @Module({
-	imports: [HashingModule, PassportModule],
+	imports: [HashingModule, PassportModule, MailerModule],
 	controllers: [AuthController],
 	providers: [AuthRepository, AuthService, AuthUtil, LocalStrategy],
 })

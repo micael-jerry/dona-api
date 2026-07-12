@@ -7,6 +7,7 @@ import { UserPayload } from './payload/user.payload';
 import { LoginResponse } from './dto/login-response.dto';
 import { UserMapper } from '../user/user.mapper';
 import { AuthUtil } from './auth.util';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class AuthService {
@@ -14,15 +15,20 @@ export class AuthService {
 		private readonly authRepository: AuthRepository,
 		private readonly hashingService: HashingService,
 		private readonly authUtil: AuthUtil,
+		private readonly mailerService: MailerService,
 	) {}
 
 	async signup(signupRequest: SignupRequest): Promise<User> {
 		const hashedPassword = await this.hashingService.hash(signupRequest.password);
 
-		return this.authRepository.createUser({
+		const createdUser: User = await this.authRepository.createUser({
 			...signupRequest,
 			password: hashedPassword,
 		});
+
+		await this.mailerService.sendWelcomeEmail(createdUser);
+
+		return createdUser;
 	}
 
 	async validateUser(email: string, pass: string): Promise<User | null> {

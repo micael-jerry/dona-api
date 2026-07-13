@@ -6,14 +6,17 @@ import { Resend } from 'resend';
 import { Logger } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
 import { WelcomeEmail } from './template/welcome.template';
+import { VerifyEmail } from './template/verify-email.template';
 
 @Injectable()
 export class MailerService {
 	private readonly logger = new Logger(MailerService.name);
 	private readonly resend: Resend;
+	private readonly uiUrl: string;
 
 	constructor(private readonly configService: ConfigService) {
 		this.resend = new Resend(this.configService.getOrThrow<string>('app.resend.apiKey'));
+		this.uiUrl = this.configService.getOrThrow<string>('app.uiUrl');
 	}
 
 	private async sendEmail({ to, subject, html }: MailObjectEntity): Promise<void> {
@@ -42,7 +45,15 @@ export class MailerService {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Welcome to Dona app',
-			html: WelcomeEmail.getTemplate(createdUser),
+			html: WelcomeEmail.getTemplate(createdUser, this.uiUrl),
+		});
+	}
+
+	async sendVerificationEmail(createdUser: User, emailVerificationToken: string): Promise<void> {
+		await this.sendEmail({
+			to: [createdUser.email],
+			subject: 'Verify your email',
+			html: VerifyEmail.getTemplate(createdUser, emailVerificationToken, this.uiUrl),
 		});
 	}
 }

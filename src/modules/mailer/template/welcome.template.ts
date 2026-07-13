@@ -1,9 +1,8 @@
 import { User } from '../../../../prisma/generated/client';
 
 export class WelcomeEmail {
-	static getTemplate(createdUser: User) {
-		const avatarUrl =
-			createdUser.avatar ?? `https://api.dicebear.com/10.x/avataaars-neutral/png?seed=${createdUser.pseudo}`;
+	static getTemplate(createdUser: User, uiUrl: string) {
+		const logoUrl = `${uiUrl}/logo.png`;
 
 		return `
       <!DOCTYPE html>
@@ -29,15 +28,10 @@ export class WelcomeEmail {
             text-align: center;
             margin-bottom: 8px;
           }
-          .header .logo-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            color: #ffffff;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            padding: 10px 28px;
-            border-radius: 50px;
+          .header .logo-img {
+            height: 56px;
+            width: auto;
+            object-fit: contain;
           }
           .header .tagline {
             font-size: 12px;
@@ -53,26 +47,13 @@ export class WelcomeEmail {
             margin-top: 24px;
             border: 1px solid #334155;
           }
-          .avatar-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-          }
-          .avatar-row img {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: 3px solid #f59e0b;
-            object-fit: cover;
-          }
-          .avatar-row .greeting h1 {
+          .greeting h1 {
             font-size: 22px;
             font-weight: 700;
             color: #f1f5f9;
             margin: 0 0 4px;
           }
-          .avatar-row .greeting p {
+          .greeting p {
             font-size: 13px;
             color: #64748b;
             margin: 0;
@@ -158,17 +139,14 @@ export class WelcomeEmail {
       <body>
         <div class="wrapper">
           <div class="header">
-            <div class="logo-badge">🚦 DONA</div>
+            <img src="${logoUrl}" alt="Dona Logo" class="logo-img">
             <p class="tagline">Road Event Signaling Platform</p>
           </div>
 
           <div class="card">
-            <div class="avatar-row">
-              <img src="${avatarUrl}" alt="${createdUser.pseudo}'s avatar">
-              <div class="greeting">
-                <h1>Welcome, ${createdUser.name}!</h1>
-                <p>Your Dona account is ready to go</p>
-              </div>
+            <div class="greeting">
+              <h1>Welcome, ${createdUser.name}!</h1>
+              <p>Your Dona account is ready to go</p>
             </div>
 
             <hr class="divider">

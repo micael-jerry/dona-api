@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { SignupRequest } from './dto/signup-request.dto';
 import { User } from '../../../prisma/generated/browser';
-import { AuthRepository } from './auth.repository';
 import { HashingService } from '../../common/hashing/hashing.service';
-import { UserPayload } from './payload/user.payload';
-import { LoginResponse } from './dto/login-response.dto';
-import { UserMapper } from '../user/user.mapper';
-import { AuthUtil } from './auth.util';
 import { MailerService } from '../mailer/mailer.service';
+import { UserMapper } from '../user/user.mapper';
+import { AuthRepository } from './auth.repository';
+import { AuthUtil } from './auth.util';
+import { LoginResponse } from './dto/login-response.dto';
+import { SignupRequest } from './dto/signup-request.dto';
+import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +27,10 @@ export class AuthService {
 		});
 
 		await this.mailerService.sendWelcomeEmail(createdUser);
+		await this.mailerService.sendVerificationEmail(
+			createdUser,
+			await this.authUtil.genEmailVerificationToken(createdUser),
+		);
 
 		return createdUser;
 	}
@@ -47,7 +51,7 @@ export class AuthService {
 		const user = await this.authRepository.findUserByEmail(userPayload.email);
 
 		return {
-			token: await this.authUtil.generateToken(userPayload),
+			token: await this.authUtil.genAuthToken(userPayload),
 			user: UserMapper.toDto(user),
 		};
 	}

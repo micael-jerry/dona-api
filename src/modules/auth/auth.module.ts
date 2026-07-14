@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
@@ -9,6 +9,7 @@ import { AuthUtil } from './auth.util';
 import { MailerModule } from '../mailer/mailer.module';
 import { AppAuthGuard } from './guards/app-auth.guard';
 
+@Global()
 @Module({
 	imports: [HashingModule, PassportModule, MailerModule],
 	controllers: [AuthController],

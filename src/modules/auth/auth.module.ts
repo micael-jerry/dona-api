@@ -7,10 +7,11 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthUtil } from './auth.util';
 import { MailerModule } from '../mailer/mailer.module';
+import { AppAuthGuard } from './guards/app-auth.guard';
 
 @Module({
 	imports: [HashingModule, PassportModule, MailerModule],
 	controllers: [AuthController],
-	providers: [AuthRepository, AuthService, AuthUtil, LocalStrategy],
+	providers: [AuthRepository, AuthService, AuthUtil, AppAuthGuard, LocalStrategy],
 })
 export class AuthModule {}

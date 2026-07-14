@@ -1,11 +1,4 @@
-import {
-	CanActivate,
-	ExecutionContext,
-	ForbiddenException,
-	Injectable,
-	Logger,
-	UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Request } from 'express';
 import { AuthType } from '../types/auth.type';
@@ -16,8 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AppAuthGuard implements CanActivate {
-	private readonly logger: Logger = new Logger(AppAuthGuard.name);
-
 	constructor(
 		private readonly reflector: Reflector,
 		private readonly jwtService: JwtService,
@@ -51,8 +42,7 @@ export class AppAuthGuard implements CanActivate {
 
 			req.user = user;
 			return true;
-		} catch (error) {
-			this.logger.error('Error verifying token', error);
+		} catch {
 			throw new UnauthorizedException('Access Denied, Invalid token');
 		}
 	}

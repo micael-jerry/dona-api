@@ -9,7 +9,7 @@ export const Auth = (type: AuthType, userRole: UserRole[] = []) => {
 		SetMetadata(AUTH_TYPE_METADATA_KEY, type),
 	];
 
-	if (type === AuthType.ANONYMOUS || type === AuthType.PUBLIC) {
+	if (type === AuthType.ANONYMOUS || type === AuthType.PUBLIC || type === AuthType.AUTHENTICATED) {
 		decorators.push(UseGuards(AppAuthGuard));
 	}
 

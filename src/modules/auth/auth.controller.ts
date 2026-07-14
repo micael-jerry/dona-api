@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { SignupRequest } from './dto/signup-request.dto';
 import { UserResponse } from '../user/dto/user-response.dto';
@@ -11,6 +11,8 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { UserPayload } from './payload/user.payload';
 import { LoginResponse } from './dto/login-response.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Auth } from './decorators/auth.decorator';
+import { AuthType } from './types/auth.type';
 
 @Controller('auth')
 export class AuthController {
@@ -40,5 +42,17 @@ export class AuthController {
 	@UseGuards(AuthGuard('local'))
 	async login(@CurrentUser() currentUser: UserPayload): Promise<LoginResponse> {
 		return await this.authService.login(currentUser);
+	}
+
+	@ApiOperation({
+		summary: 'Get current user information',
+		description: 'Returns the information of the currently authenticated user.',
+	})
+	@ApiResponse({ status: HttpStatus.OK, type: UserPayload, description: 'Current user information' })
+	@ApiCommonHttpErrorDecorator()
+	@Get('whoami')
+	@Auth(AuthType.AUTHENTICATED)
+	whoami(@CurrentUser() currentUser: UserPayload): UserPayload {
+		return currentUser;
 	}
 }

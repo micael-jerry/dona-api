@@ -15,4 +15,8 @@ export default registerAs('app', () => ({
 	resend: {
 		apiKey: process.env.RESEND_API_KEY,
 	},
+	google: {
+		clientId: process.env.GOOGLE_CLIENT_ID,
+		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+	},
 }));

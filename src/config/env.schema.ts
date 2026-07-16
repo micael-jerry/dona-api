@@ -9,4 +9,6 @@ export const envSchema = Joi.object({
 	JWT_EXPIRES_IN: Joi.string().required(),
 	RESEND_API_KEY: Joi.string().required(),
 	UI_URL: Joi.string().required(),
+	GOOGLE_CLIENT_ID: Joi.string().required(),
+	GOOGLE_CLIENT_SECRET: Joi.string().required(),
 });

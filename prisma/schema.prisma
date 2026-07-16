@@ -4,8 +4,8 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "./generated"
+  provider     = "prisma-client"
+  output       = "./generated"
   moduleFormat = "cjs"
 }
 
@@ -19,13 +19,14 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  pseudo    String   @unique @db.VarChar(25)
-  name      String   @db.VarChar(100)
-  password  String   @db.VarChar(100)
-  role      UserRole @default(USER)
-  avatar    String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String   @id @default(cuid())
+  email           String   @unique
+  pseudo          String   @unique @db.VarChar(25)
+  name            String   @db.VarChar(100)
+  password        String   @db.VarChar(100)
+  role            UserRole @default(USER)
+  avatar          String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
+  isEmailVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/browser';
 import { HashingService } from '../../common/hashing/hashing.service';
 import { MailerService } from '../mailer/mailer.service';
@@ -7,6 +7,7 @@ import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
 import { LoginResponse } from './dto/login-response.dto';
 import { SignupRequest } from './dto/signup-request.dto';
+import { EmailVerificationPayload } from './payload/email-verification.payload';
 import { UserPayload } from './payload/user.payload';
 
 @Injectable()
@@ -54,5 +55,20 @@ export class AuthService {
 			token: await this.authUtil.genAuthToken(userPayload),
 			user: UserMapper.toDto(user),
 		};
+	}
+
+	async verifyEmail(verifyEmailToken: string): Promise<User> {
+		try {
+			const payload: EmailVerificationPayload =
+				await this.authUtil.verifyToken<EmailVerificationPayload>(verifyEmailToken);
+
+			const user: User = await this.authRepository.findUserByEmail(payload.email);
+			if (user.isEmailVerified) {
+				throw new BadRequestException('Email already verified');
+			}
+			return await this.authRepository.setEmailVerified(user.email);
+		} catch {
+			throw new BadRequestException('Invalid or expired email verification token');
+		}
 	}
 }

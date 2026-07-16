@@ -13,6 +13,7 @@ export class UserMapper {
 			createdAt: entity.createdAt,
 			updatedAt: entity.updatedAt,
 			role: entity.role,
+			isEmailVerified: entity.isEmailVerified,
 		} satisfies UserResponse;
 	}
 
@@ -23,6 +24,7 @@ export class UserMapper {
 			pseudo: entity.pseudo,
 			name: entity.name,
 			role: entity.role,
+			isEmailVerified: entity.isEmailVerified,
 		} satisfies UserPayload;
 	}
 }

@@ -13,6 +13,7 @@ import { LoginResponse } from './dto/login-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './types/auth.type';
+import { EmailVerificationRequest } from './dto/verification-email-request.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -54,5 +55,17 @@ export class AuthController {
 	@Auth(AuthType.AUTHENTICATED)
 	whoami(@CurrentUser() currentUser: UserPayload): UserPayload {
 		return currentUser;
+	}
+
+	@ApiOperation({
+		summary: 'Verify email endpoint',
+		description: 'Allows a registered user to verify their email by providing their verification token.',
+	})
+	@ApiBody({ type: EmailVerificationRequest })
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'User email successfully verified' })
+	@ApiCommonHttpErrorDecorator()
+	@Post('verify-email')
+	async verifyEmail(@Body() emailVerificationRequest: EmailVerificationRequest): Promise<UserResponse> {
+		return await this.authService.verifyEmail(emailVerificationRequest.emailVerificationToken);
 	}
 }

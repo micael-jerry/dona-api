@@ -21,6 +21,9 @@ export class UserResponse {
 	})
 	avatar!: string | null;
 
+	@ApiProperty({ description: "Whether the user's email has been verified", example: true })
+	isEmailVerified!: boolean;
+
 	@ApiProperty({ description: 'Timestamp when the user was created', example: '2023-01-01T00:00:00Z' })
 	createdAt!: Date;
 

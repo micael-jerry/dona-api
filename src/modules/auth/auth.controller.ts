@@ -16,6 +16,7 @@ import { AuthType } from './types/auth.type';
 import { EmailVerificationRequest } from './dto/verification-email-request.dto';
 import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
 import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
+import { ResetPasswordRequest } from './dto/reset-password-request.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -87,5 +88,23 @@ export class AuthController {
 		@Body() resetPasswordRequest: RquestToResetPasswordRequest,
 	): Promise<RequestToResetPasswordResponse> {
 		return await this.authService.resetPasswordRequest(resetPasswordRequest);
+	}
+
+	@ApiOperation({
+		summary: 'Reset password endpoint',
+		description:
+			'Allows a user to set a new password by providing the reset token received by email and their new password.',
+	})
+	@ApiBody({ type: ResetPasswordRequest })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		type: UserResponse,
+		description: 'Password successfully reset — returns the updated user',
+	})
+	@ApiCommonHttpErrorDecorator()
+	@Post('reset-password')
+	async resetPassword(@Body() resetPasswordRequest: ResetPasswordRequest): Promise<UserResponse> {
+		const user = await this.authService.resetPassword(resetPasswordRequest);
+		return UserMapper.toDto(user);
 	}
 }

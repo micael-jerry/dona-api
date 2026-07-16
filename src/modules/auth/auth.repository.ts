@@ -23,4 +23,13 @@ export class AuthRepository {
 			},
 		});
 	}
+
+	async updatePassword(userId: string, hashedPassword: string): Promise<User> {
+		return this.dbService.user.update({
+			where: { id: userId },
+			data: {
+				password: hashedPassword,
+			},
+		});
+	}
 }

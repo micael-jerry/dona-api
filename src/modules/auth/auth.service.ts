@@ -11,6 +11,7 @@ import { UserPayload } from './payload/user.payload';
 import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
 import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
 import { SpecialPayload } from './payload/special.payload';
+import { ResetPasswordRequest } from './dto/reset-password-request.dto';
 
 @Injectable()
 export class AuthService {
@@ -83,5 +84,18 @@ export class AuthService {
 		await this.mailerService.sendResetPasswordEmail(user, resetPasswordToken);
 
 		return { email: user.email };
+	}
+
+	async resetPassword({ resetPasswordToken, newPassword }: ResetPasswordRequest): Promise<User> {
+		try {
+			const payload: SpecialPayload = await this.authUtil.verifyToken<SpecialPayload>(resetPasswordToken);
+
+			const user: User = await this.authRepository.findUserByEmail(payload.email);
+			const hashedPassword = await this.hashingService.hash(newPassword);
+
+			return await this.authRepository.updatePassword(user.id, hashedPassword);
+		} catch {
+			throw new BadRequestException('Invalid or expired password reset token');
+		}
 	}
 }

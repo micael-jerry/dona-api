@@ -1,22 +1,23 @@
 import { Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { SignupRequest } from './dto/signup-request.dto';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { UserMapper } from '../user/user.mapper';
 import { User } from '../../../prisma/generated/client';
 import { AuthService } from './auth.service';
-import { LoginRequest } from './dto/login-request.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserPayload } from './payload/user.payload';
-import { LoginResponse } from './dto/login-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './types/auth.type';
-import { EmailVerificationRequest } from './dto/verification-email-request.dto';
-import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
-import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
-import { ResetPasswordRequest } from './dto/reset-password-request.dto';
+import {
+	SignupRequest,
+	LoginRequest,
+	VerifyEmailRequest,
+	ResetPasswordRequestRequest,
+	ResetPasswordRequest,
+} from './dto/request';
+import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
 
 @Controller('auth')
 export class AuthController {
@@ -64,29 +65,29 @@ export class AuthController {
 		summary: 'Verify email endpoint',
 		description: 'Allows a registered user to verify their email by providing their verification token.',
 	})
-	@ApiBody({ type: EmailVerificationRequest })
+	@ApiBody({ type: VerifyEmailRequest })
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'User email successfully verified' })
 	@ApiCommonHttpErrorDecorator()
 	@Post('verify-email')
-	async verifyEmail(@Body() emailVerificationRequest: EmailVerificationRequest): Promise<UserResponse> {
-		return await this.authService.verifyEmail(emailVerificationRequest.emailVerificationToken);
+	async verifyEmail(@Body() verifyEmailRequest: VerifyEmailRequest): Promise<UserResponse> {
+		return await this.authService.verifyEmail(verifyEmailRequest.emailVerificationToken);
 	}
 
 	@ApiOperation({
 		summary: 'Request to reset password endpoint',
 		description: 'Allows a registered user to request to reset their password.',
 	})
-	@ApiBody({ type: RquestToResetPasswordRequest })
+	@ApiBody({ type: ResetPasswordRequestRequest })
 	@ApiResponse({
 		status: HttpStatus.OK,
-		type: RequestToResetPasswordResponse,
-		description: 'User email successfully verified',
+		type: ResetPasswordRequestResponse,
+		description: 'Password reset email sent — returns the email address',
 	})
 	@ApiCommonHttpErrorDecorator()
 	@Post('reset-password-request')
 	async resetPasswordRequest(
-		@Body() resetPasswordRequest: RquestToResetPasswordRequest,
-	): Promise<RequestToResetPasswordResponse> {
+		@Body() resetPasswordRequest: ResetPasswordRequestRequest,
+	): Promise<ResetPasswordRequestResponse> {
 		return await this.authService.resetPasswordRequest(resetPasswordRequest);
 	}
 

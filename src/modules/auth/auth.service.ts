@@ -5,13 +5,10 @@ import { MailerService } from '../mailer/mailer.service';
 import { UserMapper } from '../user/user.mapper';
 import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
-import { LoginResponse } from './dto/login-response.dto';
-import { SignupRequest } from './dto/signup-request.dto';
 import { UserPayload } from './payload/user.payload';
-import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
-import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
 import { SpecialPayload } from './payload/special.payload';
-import { ResetPasswordRequest } from './dto/reset-password-request.dto';
+import { SignupRequest, ResetPasswordRequestRequest, ResetPasswordRequest } from './dto/request';
+import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
 
 @Injectable()
 export class AuthService {
@@ -71,7 +68,7 @@ export class AuthService {
 		}
 	}
 
-	async resetPasswordRequest({ email }: RquestToResetPasswordRequest): Promise<RequestToResetPasswordResponse> {
+	async resetPasswordRequest({ email }: ResetPasswordRequestRequest): Promise<ResetPasswordRequestResponse> {
 		const user: User = await this.authRepository.findUserByEmail(email);
 
 		if (!user.isEmailVerified) {

@@ -5,13 +5,13 @@ import { AuthType } from '../types/auth.type';
 import { Reflector } from '@nestjs/core';
 import { AUTH_TYPE_METADATA_KEY } from '../constants/auth-type-metadata-key.constant';
 import { UserPayload } from '../payload/user.payload';
-import { JwtService } from '@nestjs/jwt';
+import { AuthUtil } from '../auth.util';
 
 @Injectable()
 export class AppAuthGuard implements CanActivate {
 	constructor(
 		private readonly reflector: Reflector,
-		private readonly jwtService: JwtService,
+		private readonly authUtil: AuthUtil,
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -35,7 +35,7 @@ export class AppAuthGuard implements CanActivate {
 
 		try {
 			const token: string = authHeader.split(' ')[1];
-			const user: UserPayload | undefined = await this.jwtService.verifyAsync<UserPayload>(token);
+			const user: UserPayload | undefined = await this.authUtil.verifyToken<UserPayload>(token);
 			if (!user) {
 				throw new UnauthorizedException('Access Denied, Invalid token');
 			}

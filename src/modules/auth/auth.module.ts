@@ -14,5 +14,6 @@ import { AppAuthGuard } from './guards/app-auth.guard';
 	imports: [HashingModule, PassportModule, MailerModule],
 	controllers: [AuthController],
 	providers: [AuthRepository, AuthService, AuthUtil, AppAuthGuard, LocalStrategy],
+	exports: [AuthUtil, AppAuthGuard],
 })
 export class AuthModule {}

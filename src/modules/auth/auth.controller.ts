@@ -3,7 +3,6 @@ import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserResponse } from '../user/dto/user-response.dto';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { UserMapper } from '../user/user.mapper';
-import { User } from '../../../prisma/generated/client';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserPayload } from './payload/user.payload';
@@ -32,8 +31,7 @@ export class AuthController {
 	@ApiCommonHttpErrorDecorator()
 	@Post('signup')
 	async signUp(@Body() signupRequest: SignupRequest): Promise<UserResponse> {
-		const createdUser: User = await this.authService.signup(signupRequest);
-		return UserMapper.toDto(createdUser);
+		return UserMapper.toDto(await this.authService.signup(signupRequest));
 	}
 
 	@ApiOperation({
@@ -46,7 +44,8 @@ export class AuthController {
 	@Post('login')
 	@UseGuards(AuthGuard('local'))
 	async login(@CurrentUser() currentUser: UserPayload): Promise<LoginResponse> {
-		return await this.authService.login(currentUser);
+		const { token, user } = await this.authService.login(currentUser);
+		return { token, user: UserMapper.toDto(user) };
 	}
 
 	@ApiOperation({

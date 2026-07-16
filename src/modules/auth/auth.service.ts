@@ -1,14 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '../../../prisma/generated/browser';
+import { User } from '../../../prisma/generated/client';
 import { HashingService } from '../../common/hashing/hashing.service';
 import { MailerService } from '../mailer/mailer.service';
-import { UserMapper } from '../user/user.mapper';
 import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
 import { UserPayload } from './payload/user.payload';
 import { SpecialPayload } from './payload/special.payload';
 import { SignupRequest, ResetPasswordRequestRequest, ResetPasswordRequest } from './dto/request';
-import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
+import { ResetPasswordRequestResponse } from './dto/response';
 
 @Injectable()
 export class AuthService {
@@ -34,38 +33,42 @@ export class AuthService {
 	}
 
 	async validateUser(email: string, pass: string): Promise<User | null> {
-		const user: User = await this.authRepository.findUserByEmail(email);
+		try {
+			const user: User = await this.authRepository.findUserByEmail(email);
+			const isPasswordValid = await this.hashingService.compare(pass, user.password);
 
-		const isPasswordValid = await this.hashingService.compare(pass, user.password);
-
-		if (!isPasswordValid) {
+			return isPasswordValid ? user : null;
+		} catch {
+			// User not found — return null so Passport treats it as invalid credentials
 			return null;
 		}
-
-		return user;
 	}
 
-	async login(userPayload: UserPayload): Promise<LoginResponse> {
+	async login(userPayload: UserPayload): Promise<{ token: string; user: User }> {
 		const user = await this.authRepository.findUserByEmail(userPayload.email);
 
 		return {
 			token: await this.authUtil.genAuthToken(userPayload),
-			user: UserMapper.toDto(user),
+			user,
 		};
 	}
 
 	async verifyEmail(verifyEmailToken: string): Promise<User> {
-		try {
-			const payload: SpecialPayload = await this.authUtil.verifyToken<SpecialPayload>(verifyEmailToken);
+		let payload: SpecialPayload;
 
-			const user: User = await this.authRepository.findUserByEmail(payload.email);
-			if (user.isEmailVerified) {
-				throw new BadRequestException('Email already verified');
-			}
-			return await this.authRepository.setEmailVerified(user.email);
+		try {
+			payload = await this.authUtil.verifyToken<SpecialPayload>(verifyEmailToken);
 		} catch {
 			throw new BadRequestException('Invalid or expired email verification token');
 		}
+
+		const user: User = await this.authRepository.findUserByEmail(payload.email);
+
+		if (user.isEmailVerified) {
+			throw new BadRequestException('Email already verified');
+		}
+
+		return this.authRepository.setEmailVerified(user.email);
 	}
 
 	async resetPasswordRequest({ email }: ResetPasswordRequestRequest): Promise<ResetPasswordRequestResponse> {
@@ -84,15 +87,17 @@ export class AuthService {
 	}
 
 	async resetPassword({ resetPasswordToken, newPassword }: ResetPasswordRequest): Promise<User> {
+		let payload: SpecialPayload;
+
 		try {
-			const payload: SpecialPayload = await this.authUtil.verifyToken<SpecialPayload>(resetPasswordToken);
-
-			const user: User = await this.authRepository.findUserByEmail(payload.email);
-			const hashedPassword = await this.hashingService.hash(newPassword);
-
-			return await this.authRepository.updatePassword(user.id, hashedPassword);
+			payload = await this.authUtil.verifyToken<SpecialPayload>(resetPasswordToken);
 		} catch {
 			throw new BadRequestException('Invalid or expired password reset token');
 		}
+
+		const user: User = await this.authRepository.findUserByEmail(payload.email);
+		const hashedPassword = await this.hashingService.hash(newPassword);
+
+		return this.authRepository.updatePassword(user.id, hashedPassword);
 	}
 }

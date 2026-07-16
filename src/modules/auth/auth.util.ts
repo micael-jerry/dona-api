@@ -8,20 +8,16 @@ import { SpecialPayload } from './payload/special.payload';
 export class AuthUtil {
 	constructor(private readonly jwtService: JwtService) {}
 
-	async genAuthToken(userPayload: UserPayload): Promise<string> {
-		return await this.jwtService.signAsync(userPayload);
+	genAuthToken(userPayload: UserPayload): Promise<string> {
+		return this.jwtService.signAsync(userPayload);
 	}
 
-	async verifyToken<T extends object>(token: string): Promise<T> {
-		return await this.jwtService.verifyAsync<T>(token);
+	verifyToken<T extends object>(token: string): Promise<T> {
+		return this.jwtService.verifyAsync<T>(token);
 	}
 
-	async genSpecialToken({ id, email, role }: User): Promise<string> {
-		const specialPayload: SpecialPayload = {
-			id,
-			email,
-			role,
-		};
-		return await this.jwtService.signAsync(specialPayload, { expiresIn: '1h' });
+	genSpecialToken({ id, email, role }: User): Promise<string> {
+		const specialPayload: SpecialPayload = { id, email, role };
+		return this.jwtService.signAsync(specialPayload, { expiresIn: '1h' });
 	}
 }

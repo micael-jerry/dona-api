@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../../prisma/generated/client';
-import { EmailVerificationPayload } from './payload/email-verification.payload';
 import { UserPayload } from './payload/user.payload';
+import { SpecialPayload } from './payload/special.payload';
 
 @Injectable()
 export class AuthUtil {
@@ -16,12 +16,12 @@ export class AuthUtil {
 		return await this.jwtService.verifyAsync<T>(token);
 	}
 
-	async genEmailVerificationToken({ id, email, role }: User): Promise<string> {
-		const emailVerificationPayload: EmailVerificationPayload = {
+	async genSpecialToken({ id, email, role }: User): Promise<string> {
+		const specialPayload: SpecialPayload = {
 			id,
 			email,
 			role,
 		};
-		return await this.jwtService.signAsync(emailVerificationPayload, { expiresIn: '1h' });
+		return await this.jwtService.signAsync(specialPayload, { expiresIn: '1h' });
 	}
 }

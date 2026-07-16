@@ -7,8 +7,10 @@ import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
 import { LoginResponse } from './dto/login-response.dto';
 import { SignupRequest } from './dto/signup-request.dto';
-import { EmailVerificationPayload } from './payload/email-verification.payload';
 import { UserPayload } from './payload/user.payload';
+import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
+import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
+import { SpecialPayload } from './payload/special.payload';
 
 @Injectable()
 export class AuthService {
@@ -28,10 +30,7 @@ export class AuthService {
 		});
 
 		await this.mailerService.sendWelcomeEmail(createdUser);
-		await this.mailerService.sendVerificationEmail(
-			createdUser,
-			await this.authUtil.genEmailVerificationToken(createdUser),
-		);
+		await this.mailerService.sendVerificationEmail(createdUser, await this.authUtil.genSpecialToken(createdUser));
 
 		return createdUser;
 	}
@@ -59,8 +58,7 @@ export class AuthService {
 
 	async verifyEmail(verifyEmailToken: string): Promise<User> {
 		try {
-			const payload: EmailVerificationPayload =
-				await this.authUtil.verifyToken<EmailVerificationPayload>(verifyEmailToken);
+			const payload: SpecialPayload = await this.authUtil.verifyToken<SpecialPayload>(verifyEmailToken);
 
 			const user: User = await this.authRepository.findUserByEmail(payload.email);
 			if (user.isEmailVerified) {
@@ -70,5 +68,20 @@ export class AuthService {
 		} catch {
 			throw new BadRequestException('Invalid or expired email verification token');
 		}
+	}
+
+	async resetPasswordRequest({ email }: RquestToResetPasswordRequest): Promise<RequestToResetPasswordResponse> {
+		const user: User = await this.authRepository.findUserByEmail(email);
+
+		if (!user.isEmailVerified) {
+			throw new BadRequestException(
+				'Your email address has not been verified yet. Please verify your email before requesting a password reset.',
+			);
+		}
+
+		const resetPasswordToken = await this.authUtil.genSpecialToken(user);
+		await this.mailerService.sendResetPasswordEmail(user, resetPasswordToken);
+
+		return { email: user.email };
 	}
 }

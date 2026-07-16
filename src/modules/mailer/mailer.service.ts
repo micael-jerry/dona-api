@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
 import { WelcomeEmail } from './template/welcome.template';
 import { VerifyEmail } from './template/verify-email.template';
+import { ResetPasswordEmail } from './template/reset-password.template';
 
 @Injectable()
 export class MailerService {
@@ -54,6 +55,14 @@ export class MailerService {
 			to: [createdUser.email],
 			subject: 'Verify your email',
 			html: VerifyEmail.getTemplate(createdUser, emailVerificationToken, this.uiUrl),
+		});
+	}
+
+	async sendResetPasswordEmail(user: User, resetPasswordToken: string): Promise<void> {
+		await this.sendEmail({
+			to: [user.email],
+			subject: 'Reset your password',
+			html: ResetPasswordEmail.getTemplate(user, resetPasswordToken, this.uiUrl),
 		});
 	}
 }

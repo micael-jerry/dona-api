@@ -14,6 +14,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './types/auth.type';
 import { EmailVerificationRequest } from './dto/verification-email-request.dto';
+import { RequestToResetPasswordResponse } from './dto/request-to-reset-password-response.dto';
+import { RquestToResetPasswordRequest } from './dto/request-to-reset-password-request';
 
 @Controller('auth')
 export class AuthController {
@@ -67,5 +69,23 @@ export class AuthController {
 	@Post('verify-email')
 	async verifyEmail(@Body() emailVerificationRequest: EmailVerificationRequest): Promise<UserResponse> {
 		return await this.authService.verifyEmail(emailVerificationRequest.emailVerificationToken);
+	}
+
+	@ApiOperation({
+		summary: 'Request to reset password endpoint',
+		description: 'Allows a registered user to request to reset their password.',
+	})
+	@ApiBody({ type: RquestToResetPasswordRequest })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		type: RequestToResetPasswordResponse,
+		description: 'User email successfully verified',
+	})
+	@ApiCommonHttpErrorDecorator()
+	@Post('reset-password-request')
+	async resetPasswordRequest(
+		@Body() resetPasswordRequest: RquestToResetPasswordRequest,
+	): Promise<RequestToResetPasswordResponse> {
+		return await this.authService.resetPasswordRequest(resetPasswordRequest);
 	}
 }

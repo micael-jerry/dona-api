@@ -15,10 +15,17 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PORT: ${{ secrets.PORT }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
+      # App
       NODE_ENV: ${{ vars.NODE_ENV }}
+      PORT: ${{ vars.PORT }}
+      UI_URL: ${{ vars.UI_URL }}
+      # Database
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # JWT
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN }}
+      # Mailing
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
     steps:
       - name: Checkout code

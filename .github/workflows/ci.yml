@@ -17,7 +17,7 @@ jobs:
     env:
       # App
       NODE_ENV: ${{ vars.NODE_ENV }}
-      PORT: ${{ vars.PORT }}
+      PORT: ${{ secrets.PORT }}
       UI_URL: ${{ vars.UI_URL }}
       # Database
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -26,6 +26,9 @@ jobs:
       JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN }}
       # Mailing
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      # Google
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
     steps:
       - name: Checkout code

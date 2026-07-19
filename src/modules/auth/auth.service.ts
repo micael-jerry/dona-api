@@ -18,11 +18,11 @@ export class AuthService {
 		private readonly mailerService: MailerService,
 	) {}
 
-	async signup(signupRequest: SignupRequest): Promise<User> {
-		const hashedPassword = await this.hashingService.hash(signupRequest.password);
+	async signup({ password, ...rest }: SignupRequest): Promise<User> {
+		const hashedPassword = await this.hashingService.hash(password);
 
 		const createdUser: User = await this.authRepository.createUser({
-			...signupRequest,
+			...rest,
 			password: hashedPassword,
 		});
 

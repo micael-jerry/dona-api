@@ -48,6 +48,9 @@ export class AppAuthGuard implements CanActivate {
 	}
 
 	private extractAuthType(context: ExecutionContext): AuthType | undefined {
-		return this.reflector.get<AuthType>(AUTH_TYPE_METADATA_KEY, context.getHandler());
+		return this.reflector.getAllAndOverride<AuthType>(AUTH_TYPE_METADATA_KEY, [
+			context.getHandler(),
+			context.getClass(),
+		]);
 	}
 }

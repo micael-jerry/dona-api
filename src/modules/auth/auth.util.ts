@@ -29,7 +29,7 @@ export class AuthUtil {
 		const jti = randomUUID();
 		const specialPayload: SpecialPayload = { jti, id, email, role, purpose };
 
-		return this.jwtService.signAsync(specialPayload, { expiresIn: '24h', jwtid: jti });
+		return this.jwtService.signAsync(specialPayload, { expiresIn: '24h' });
 	}
 
 	/**

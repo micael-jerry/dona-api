@@ -14,15 +14,17 @@ export class MailerService {
 	private readonly logger = new Logger(MailerService.name);
 	private readonly resend: Resend;
 	private readonly uiUrl: string;
+	private readonly nodeEnv: NodeEnv;
 
 	constructor(private readonly configService: ConfigService) {
 		this.resend = new Resend(this.configService.getOrThrow<string>('app.resend.apiKey'));
 		this.uiUrl = this.configService.getOrThrow<string>('app.uiUrl');
+		this.nodeEnv = this.configService.getOrThrow<NodeEnv>('app.env');
 	}
 
 	private async sendEmail({ to, subject, html }: MailObjectEntity): Promise<void> {
 		// INFO: Not send email on test environment
-		if (this.configService.getOrThrow<NodeEnv>('app.env') === NodeEnv.TEST) {
+		if (this.nodeEnv === NodeEnv.TEST) {
 			return;
 		}
 

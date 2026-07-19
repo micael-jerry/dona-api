@@ -18,24 +18,20 @@ export class AuthGoogleService {
 			throw new BadRequestException('Invalid Email');
 		}
 
-		return this.authRepository
-			.findUserByEmail(profile._json.email)
-			.then((user: User) => {
-				return user;
-			})
-			.catch(() => {
-				const userToCreate: UserCreateInput = {
-					email: profile._json.email!,
-					isEmailVerified: true,
-					name: profile.displayName,
-					pseudo: profile.username || generateFromEmail(profile._json.email!, 5),
-					avatar: profile._json.picture,
-					isOAuthGoogleProvider: true,
-				};
-				return this.authRepository.createUser(userToCreate).then(async (user: User) => {
-					await this.mailerService.sendWelcomeEmail(user);
-					return user;
-				});
-			});
+		try {
+			return await this.authRepository.findUserByEmail(profile._json.email);
+		} catch {
+			const userToCreate: UserCreateInput = {
+				email: profile._json.email,
+				isEmailVerified: true,
+				name: profile.displayName,
+				pseudo: profile.username || generateFromEmail(profile._json.email, 5),
+				avatar: profile._json.picture,
+				isOAuthGoogleProvider: true,
+			};
+			const user = await this.authRepository.createUser(userToCreate);
+			await this.mailerService.sendWelcomeEmail(user);
+			return user;
+		}
 	}
 }

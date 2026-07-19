@@ -6,7 +6,6 @@ import { UserMapper } from '../user/user.mapper';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { UserPayload } from './payload/user.payload';
-import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './types/auth.type';
 import {
@@ -17,6 +16,7 @@ import {
 	ResetPasswordRequest,
 } from './dto/request';
 import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
+import { LoginLocalGuard } from './guards/login-local.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -42,7 +42,7 @@ export class AuthController {
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse, description: 'User successfully logged in' })
 	@ApiCommonHttpErrorDecorator()
 	@Post('login')
-	@UseGuards(AuthGuard('local'))
+	@UseGuards(LoginLocalGuard)
 	async login(@CurrentUser() currentUser: UserPayload): Promise<LoginResponse> {
 		const { token, user } = await this.authService.login(currentUser);
 		return { token, user: UserMapper.toDto(user) };

@@ -33,8 +33,13 @@ export class AppAuthGuard implements CanActivate {
 			throw new UnauthorizedException('Access Denied, Authorization header is required');
 		}
 
+		const [type, token]: string[] = authHeader.split(' ');
+
+		if (type.toLowerCase() !== 'bearer' || !token) {
+			throw new UnauthorizedException('Access Denied, Invalid token format');
+		}
+
 		try {
-			const token: string = authHeader.split(' ')[1];
 			const user: UserPayload | undefined = await this.authUtil.verifyToken<UserPayload>(token);
 			if (!user) {
 				throw new UnauthorizedException('Access Denied, Invalid token');

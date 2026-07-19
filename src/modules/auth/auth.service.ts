@@ -33,18 +33,19 @@ export class AuthService {
 	}
 
 	async validateUser(email: string, pass: string): Promise<User | null> {
-		try {
-			const user: User = await this.authRepository.findUserByEmail(email);
-			if (!user.password) {
-				throw new BadRequestException('Please use the Google OAuth provider to log in');
-			}
-			const isPasswordValid = await this.hashingService.compare(pass, user.password);
+		let user: User;
 
-			return isPasswordValid ? user : null;
+		try {
+			user = await this.authRepository.findUserByEmail(email);
 		} catch {
-			// User not found — return null so Passport treats it as invalid credentials
 			return null;
 		}
+
+		if (!user.password) {
+			throw new BadRequestException('Please use the Google OAuth provider to log in');
+		}
+
+		return (await this.hashingService.compare(pass, user.password)) ? user : null;
 	}
 
 	async login(userPayload: UserPayload): Promise<{ token: string; user: User }> {

@@ -19,14 +19,15 @@ enum UserRole {
 }
 
 model User {
-  id              String   @id @default(cuid())
-  email           String   @unique
-  pseudo          String   @unique @db.VarChar(25)
-  name            String   @db.VarChar(100)
-  password        String   @db.VarChar(100)
-  role            UserRole @default(USER)
-  avatar          String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
-  isEmailVerified Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  pseudo                String   @unique @db.VarChar(25)
+  name                  String   @db.VarChar(100)
+  password              String?  @db.VarChar(100)
+  role                  UserRole @default(USER)
+  avatar                String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
+  isEmailVerified       Boolean  @default(false)
+  isOAuthGoogleProvider Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

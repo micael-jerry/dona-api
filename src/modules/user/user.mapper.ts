@@ -14,6 +14,7 @@ export class UserMapper {
 			updatedAt: entity.updatedAt,
 			role: entity.role,
 			isEmailVerified: entity.isEmailVerified,
+			isOAuthGoogleProvider: entity.isOAuthGoogleProvider,
 		} satisfies UserResponse;
 	}
 
@@ -25,6 +26,7 @@ export class UserMapper {
 			name: entity.name,
 			role: entity.role,
 			isEmailVerified: entity.isEmailVerified,
+			isOAuthGoogleProvider: entity.isOAuthGoogleProvider,
 		} satisfies UserPayload;
 	}
 }

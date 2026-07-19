@@ -11,4 +11,5 @@ export const envSchema = Joi.object({
 	UI_URL: Joi.string().required(),
 	GOOGLE_CLIENT_ID: Joi.string().required(),
 	GOOGLE_CLIENT_SECRET: Joi.string().required(),
+	GOOGLE_REDIRECT_URI: Joi.string().uri().required(),
 });

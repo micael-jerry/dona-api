@@ -17,10 +17,15 @@ import {
 } from './dto/request';
 import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
 import { LoginLocalGuard } from './guards/login-local.guard';
+import { UserService } from '../user/user.service';
+import { User } from '../../../prisma/generated/client';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private readonly userService: UserService,
+	) {}
 
 	@ApiOperation({
 		summary: 'User registration endpoint',
@@ -52,12 +57,14 @@ export class AuthController {
 		summary: 'Get current user information',
 		description: 'Returns the information of the currently authenticated user.',
 	})
-	@ApiResponse({ status: HttpStatus.OK, type: UserPayload, description: 'Current user information' })
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'Current user information' })
 	@ApiCommonHttpErrorDecorator()
 	@Get('whoami')
 	@Auth(AuthType.AUTHENTICATED)
-	whoami(@CurrentUser() currentUser: UserPayload): UserPayload {
-		return currentUser;
+	async whoami(@CurrentUser() { id }: UserPayload): Promise<UserResponse> {
+		const user: User = await this.userService.getById(id);
+
+		return UserMapper.toDto(user);
 	}
 
 	@ApiOperation({

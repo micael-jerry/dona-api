@@ -1,5 +1,5 @@
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
@@ -7,7 +7,7 @@ import { AppModule } from './../src/app.module';
 describe('HealthController (e2e)', () => {
 	let app: INestApplication<App>;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -16,11 +16,15 @@ describe('HealthController (e2e)', () => {
 		await app.init();
 	});
 
-	it('/ping (GET)', () => {
-		return request(app.getHttpServer()).get('/ping?message=test').expect(200).expect({ message: 'test' });
+	afterAll(async () => {
+		await app.close();
 	});
 
-	afterEach(async () => {
-		await app.close();
+	it('/ping (GET)', async () => {
+		const response = await request(app.getHttpServer()).get('/ping?message=test-message').expect(HttpStatus.OK);
+
+		const body = response.body as { message: string };
+		expect(body).toHaveProperty('message');
+		expect(body.message).toBe('test-message');
 	});
 });

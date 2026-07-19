@@ -1,2 +1,2 @@
 export { default as appConfig } from './app.config';
-export * from './app.type';
+export * from './app-config.type';

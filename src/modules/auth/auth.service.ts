@@ -5,7 +5,7 @@ import { MailerService } from '../mailer/mailer.service';
 import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
 import { UserPayload } from './payload/user.payload';
-import { SpecialPayload } from './payload/special.payload';
+import { SpecialPayload, SpecialTokenPurpose } from './payload/special.payload';
 import { SignupRequest, ResetPasswordRequestRequest, ResetPasswordRequest } from './dto/request';
 import { ResetPasswordRequestResponse } from './dto/response';
 
@@ -27,7 +27,10 @@ export class AuthService {
 		});
 
 		await this.mailerService.sendWelcomeEmail(createdUser);
-		await this.mailerService.sendVerificationEmail(createdUser, await this.authUtil.genSpecialToken(createdUser));
+		await this.mailerService.sendVerificationEmail(
+			createdUser,
+			await this.authUtil.genSpecialToken(createdUser, SpecialTokenPurpose.VERIFY_EMAIL),
+		);
 
 		return createdUser;
 	}
@@ -84,7 +87,7 @@ export class AuthService {
 			);
 		}
 
-		const resetPasswordToken = await this.authUtil.genSpecialToken(user);
+		const resetPasswordToken = await this.authUtil.genSpecialToken(user, SpecialTokenPurpose.RESET_PASSWORD);
 		await this.mailerService.sendResetPasswordEmail(user, resetPasswordToken);
 
 		return { email: user.email };

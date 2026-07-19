@@ -5,6 +5,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerConfig } from './config/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 
 function docBuilder(app: INestApplication, conf: SwaggerConfig) {
 	const documentObject = new DocumentBuilder()
@@ -34,12 +35,14 @@ async function run() {
 		forbidNonWhitelisted: true,
 	});
 	const httpExceptionFilter = new HttpExceptionFilter();
+	const prismaExceptionFilter = new PrismaExceptionFilter();
 
 	app.enableCors({
 		origin: '*',
 	});
 	app.useGlobalPipes(validationPipe);
 	app.useGlobalFilters(httpExceptionFilter);
+	app.useGlobalFilters(prismaExceptionFilter);
 
 	docBuilder(app, swaggerConfig);
 	await app.listen(port);

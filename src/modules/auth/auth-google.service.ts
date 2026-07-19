@@ -13,6 +13,16 @@ export class AuthGoogleService {
 		private readonly mailerService: MailerService,
 	) {}
 
+	/**
+	 * Validates a user based on their Google OAuth profile.
+	 * If the user exists, returns the user. Otherwise, creates a new user,
+	 * marks their email as verified, generates a pseudo if not provided,
+	 * sends a welcome email, and returns the newly created user.
+	 *
+	 * @param {Profile} profile - The Google OAuth profile information.
+	 * @returns {Promise<User>} The existing or newly created user.
+	 * @throws {BadRequestException} If the Google profile does not contain an email.
+	 */
 	async validateUser(profile: Profile): Promise<User> {
 		if (!profile._json.email) {
 			throw new BadRequestException('Invalid Email');

@@ -7,6 +7,11 @@ import { AUTH_TYPE_METADATA_KEY } from '../constants/auth-type-metadata-key.cons
 import { UserPayload } from '../payload/user.payload';
 import { AuthUtil } from '../auth.util';
 
+/**
+ * Global authentication guard that verifies JWT tokens.
+ * It checks the metadata set by the @Auth decorator and enforces access rules
+ * (e.g., PUBLIC, ANONYMOUS, AUTHENTICATED).
+ */
 @Injectable()
 export class AppAuthGuard implements CanActivate {
 	constructor(

@@ -22,6 +22,14 @@ export class MailerService {
 		this.nodeEnv = this.configService.getOrThrow<NodeEnv>('app.env');
 	}
 
+	/**
+	 * Core method to send an email using the Resend service.
+	 * Does not send emails in the 'TEST' environment.
+	 *
+	 * @param {MailObjectEntity} mailObject - The email object containing to, subject, and html content.
+	 * @returns {Promise<void>}
+	 * @private
+	 */
 	private async sendEmail({ to, subject, html }: MailObjectEntity): Promise<void> {
 		// INFO: Not send email on test environment
 		if (this.nodeEnv === NodeEnv.TEST) {
@@ -42,6 +50,12 @@ export class MailerService {
 		this.logger.log(`WELCOME EMAIL SENDED TO ${to.join(', ')}`, data);
 	}
 
+	/**
+	 * Sends a welcome email to a newly created user.
+	 *
+	 * @param {User} createdUser - The newly registered user.
+	 * @returns {Promise<void>}
+	 */
 	async sendWelcomeEmail(createdUser: User): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
@@ -50,6 +64,13 @@ export class MailerService {
 		});
 	}
 
+	/**
+	 * Sends an email with a token to verify the user's email address.
+	 *
+	 * @param {User} createdUser - The user needing verification.
+	 * @param {string} emailVerificationToken - The verification token.
+	 * @returns {Promise<void>}
+	 */
 	async sendVerificationEmail(createdUser: User, emailVerificationToken: string): Promise<void> {
 		await this.sendEmail({
 			to: [createdUser.email],
@@ -58,6 +79,13 @@ export class MailerService {
 		});
 	}
 
+	/**
+	 * Sends a password reset email to a user with a reset token.
+	 *
+	 * @param {User} user - The user requesting the password reset.
+	 * @param {string} resetPasswordToken - The password reset token.
+	 * @returns {Promise<void>}
+	 */
 	async sendResetPasswordEmail(user: User, resetPasswordToken: string): Promise<void> {
 		await this.sendEmail({
 			to: [user.email],

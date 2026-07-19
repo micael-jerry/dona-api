@@ -18,6 +18,14 @@ export class AuthService {
 		private readonly mailerService: MailerService,
 	) {}
 
+	/**
+	 * Registers a new user.
+	 * Hashes the user's password, creates the user record in the database,
+	 * and triggers welcome and verification emails.
+	 *
+	 * @param {SignupRequest} signupData - The user's registration data including password.
+	 * @returns {Promise<User>} The created user object.
+	 */
 	async signup({ password, ...rest }: SignupRequest): Promise<User> {
 		const hashedPassword = await this.hashingService.hash(password);
 
@@ -35,6 +43,15 @@ export class AuthService {
 		return createdUser;
 	}
 
+	/**
+	 * Validates a user's credentials.
+	 * Checks if the user exists and if the provided password matches the hashed password.
+	 *
+	 * @param {string} email - The user's email address.
+	 * @param {string} pass - The user's plain text password.
+	 * @returns {Promise<User | null>} The user object if validation succeeds, null otherwise.
+	 * @throws {BadRequestException} If the user registered via Google OAuth and has no password.
+	 */
 	async validateUser(email: string, pass: string): Promise<User | null> {
 		let user: User;
 
@@ -51,6 +68,12 @@ export class AuthService {
 		return (await this.hashingService.compare(pass, user.password)) ? user : null;
 	}
 
+	/**
+	 * Generates an authentication token for a validated user.
+	 *
+	 * @param {UserPayload} userPayload - The payload containing basic user information.
+	 * @returns {Promise<{ token: string; user: User }>} An object containing the generated JWT token and the full user object.
+	 */
 	async login(userPayload: UserPayload): Promise<{ token: string; user: User }> {
 		const user = await this.authRepository.findUserByEmail(userPayload.email);
 
@@ -60,6 +83,13 @@ export class AuthService {
 		};
 	}
 
+	/**
+	 * Verifies a user's email address using a special verification token.
+	 *
+	 * @param {string} verifyEmailToken - The token sent to the user's email.
+	 * @returns {Promise<User>} The updated user object with email verified.
+	 * @throws {BadRequestException} If the email is already verified.
+	 */
 	async verifyEmail(verifyEmailToken: string): Promise<User> {
 		const payload: SpecialPayload = await this.authUtil.verifyAndConsumeSpecialToken<SpecialPayload>(verifyEmailToken);
 
@@ -72,6 +102,13 @@ export class AuthService {
 		return this.authRepository.setEmailVerified(user.email);
 	}
 
+	/**
+	 * Initiates a password reset process by generating a token and sending an email.
+	 *
+	 * @param {ResetPasswordRequestRequest} requestData - The request containing the user's email.
+	 * @returns {Promise<ResetPasswordRequestResponse>} An object containing the user's email.
+	 * @throws {BadRequestException} If the user's email has not been verified.
+	 */
 	async resetPasswordRequest({ email }: ResetPasswordRequestRequest): Promise<ResetPasswordRequestResponse> {
 		const user: User = await this.authRepository.findUserByEmail(email);
 
@@ -87,6 +124,12 @@ export class AuthService {
 		return { email: user.email };
 	}
 
+	/**
+	 * Resets a user's password using a valid reset token.
+	 *
+	 * @param {ResetPasswordRequest} requestData - The request containing the reset token and the new password.
+	 * @returns {Promise<User>} The updated user object.
+	 */
 	async resetPassword({ resetPasswordToken, newPassword }: ResetPasswordRequest): Promise<User> {
 		const payload: SpecialPayload =
 			await this.authUtil.verifyAndConsumeSpecialToken<SpecialPayload>(resetPasswordToken);

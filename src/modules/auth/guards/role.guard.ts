@@ -7,6 +7,10 @@ import { Request } from 'express';
 import { UserPayload } from '../payload/user.payload';
 import { Roles } from '../decorators/roles.decorator';
 
+/**
+ * Guard that checks if the authenticated user has the necessary roles
+ * to access a specific route. Relies on the metadata set by the @Roles decorator.
+ */
 @Injectable()
 export class RolesGuard implements CanActivate {
 	constructor(private readonly reflector: Reflector) {}

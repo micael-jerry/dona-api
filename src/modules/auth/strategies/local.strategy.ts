@@ -6,6 +6,10 @@ import { User } from '../../../../prisma/generated/client';
 import { UserPayload } from '../payload/user.payload';
 import { UserMapper } from '../../user/user.mapper';
 
+/**
+ * Passport strategy for local authentication using email and password.
+ * Validates the user credentials against the database.
+ */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
 	constructor(private readonly authService: AuthService) {

@@ -8,6 +8,10 @@ import { AuthUtil } from '../auth.util';
 import { UserPayload } from '../payload/user.payload';
 import { UserMapper } from '../../user/user.mapper';
 
+/**
+ * Passport strategy for Google OAuth 2.0 authentication.
+ * Handles the OAuth flow, validates the Google profile, and returns the user payload.
+ */
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
 	constructor(

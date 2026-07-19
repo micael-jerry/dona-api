@@ -7,14 +7,34 @@ import { UserCreateInput } from '../../../prisma/generated/models';
 export class AuthRepository {
 	constructor(private readonly dbService: DbService) {}
 
+	/**
+	 * Creates a new user record in the database.
+	 *
+	 * @param {UserCreateInput} data - The data to create the user with.
+	 * @returns {Promise<User>} The created user.
+	 */
 	async createUser(data: UserCreateInput): Promise<User> {
 		return this.dbService.user.create({ data });
 	}
 
+	/**
+	 * Finds a user by their email address.
+	 * Throws an error if the user is not found.
+	 *
+	 * @param {string} email - The email address to search for.
+	 * @returns {Promise<User>} The found user.
+	 * @throws {Error} If no user is found with the given email.
+	 */
 	async findUserByEmail(email: string): Promise<User> {
 		return this.dbService.user.findUniqueOrThrow({ where: { email } });
 	}
 
+	/**
+	 * Updates a user's status to mark their email as verified.
+	 *
+	 * @param {string} email - The email address of the user to update.
+	 * @returns {Promise<User>} The updated user.
+	 */
 	async setEmailVerified(email: string): Promise<User> {
 		return this.dbService.user.update({
 			where: { email },
@@ -24,6 +44,13 @@ export class AuthRepository {
 		});
 	}
 
+	/**
+	 * Updates the password for a specific user.
+	 *
+	 * @param {string} userId - The ID of the user.
+	 * @param {string} hashedPassword - The new hashed password.
+	 * @returns {Promise<User>} The updated user.
+	 */
 	async updatePassword(userId: string, hashedPassword: string): Promise<User> {
 		return this.dbService.user.update({
 			where: { id: userId },

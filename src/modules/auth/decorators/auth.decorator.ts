@@ -6,6 +6,14 @@ import { AppAuthGuard } from '../guards/app-auth.guard';
 import { RolesGuard } from '../guards/role.guard';
 import { Roles } from './roles.decorator';
 
+/**
+ * Centralized authentication decorator to secure endpoints.
+ * Applies the appropriate metadata and guards based on the specified authentication type.
+ *
+ * @param {AuthType} type - The level of authentication required (e.g., PUBLIC, AUTHENTICATED, ROLE_BASED).
+ * @param {UserRole[]} [userRole=[]] - An array of required roles if the type is ROLE_BASED.
+ * @returns A composite decorator containing necessary Metadata and Guards.
+ */
 export const Auth = (type: AuthType, userRole: UserRole[] = []) => {
 	const decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [
 		SetMetadata(AUTH_TYPE_METADATA_KEY, type),

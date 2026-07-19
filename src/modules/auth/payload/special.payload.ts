@@ -6,6 +6,7 @@ export enum SpecialTokenPurpose {
 }
 
 export class SpecialPayload {
+	jti!: string;
 	id!: string;
 	email!: string;
 	role!: UserRole;

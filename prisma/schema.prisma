@@ -31,3 +31,12 @@ model User {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
+
+/// Tracks consumed single-use JWT IDs (JTI) to prevent token reuse.
+/// A token whose JTI is present in this table has already been used and must be rejected.
+model UsedToken {
+  jti       String   @id              // UUID v4 — unique JWT identifier
+  expiresAt DateTime                  // mirrors token expiry — allows future cleanup jobs
+  usedAt    DateTime @default(now())  // audit: when the token was consumed
+}
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
-import { UserCreateInput } from '../../../prisma/generated/models';
 import { DbService } from '../../db/db.service';
+import { UserCreateInput } from '../../../prisma/generated/models';
 
 @Injectable()
 export class AuthRepository {
@@ -31,5 +31,21 @@ export class AuthRepository {
 				password: hashedPassword,
 			},
 		});
+	}
+
+	/**
+	 * Returns true if the given JTI has already been consumed (token was used).
+	 */
+	async isJtiConsumed(jti: string): Promise<boolean> {
+		const record = await this.dbService.usedToken.findUnique({ where: { jti } });
+		return record !== null;
+	}
+
+	/**
+	 * Marks a JTI as consumed, preventing any future use of the associated token.
+	 * @param expiresAt - mirrors the token expiry so stale records can be purged later.
+	 */
+	async consumeJti(jti: string, expiresAt: Date): Promise<void> {
+		await this.dbService.usedToken.create({ data: { jti, expiresAt } });
 	}
 }

@@ -61,13 +61,7 @@ export class AuthService {
 	}
 
 	async verifyEmail(verifyEmailToken: string): Promise<User> {
-		let payload: SpecialPayload;
-
-		try {
-			payload = await this.authUtil.verifyToken<SpecialPayload>(verifyEmailToken);
-		} catch {
-			throw new BadRequestException('Invalid or expired email verification token');
-		}
+		const payload: SpecialPayload = await this.authUtil.verifyAndConsumeSpecialToken<SpecialPayload>(verifyEmailToken);
 
 		const user: User = await this.authRepository.findUserByEmail(payload.email);
 
@@ -94,13 +88,8 @@ export class AuthService {
 	}
 
 	async resetPassword({ resetPasswordToken, newPassword }: ResetPasswordRequest): Promise<User> {
-		let payload: SpecialPayload;
-
-		try {
-			payload = await this.authUtil.verifyToken<SpecialPayload>(resetPasswordToken);
-		} catch {
-			throw new BadRequestException('Invalid or expired password reset token');
-		}
+		const payload: SpecialPayload =
+			await this.authUtil.verifyAndConsumeSpecialToken<SpecialPayload>(resetPasswordToken);
 
 		const user: User = await this.authRepository.findUserByEmail(payload.email);
 		const hashedPassword = await this.hashingService.hash(newPassword);

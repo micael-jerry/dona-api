@@ -35,8 +35,6 @@ export class MailerService {
 
 		if (error) {
 			this.logger.error(`ERROR TO SEND WELCOME EMAIL TO MAIL ${to.join(', ')}`, error);
-			// TODO: VERIFY IF THE ERROR IS FROM RESEND OR FROM THE FRONTEND
-			// throw new BadGatewayException('Failed to send the email via external service. Please try again later.');
 		}
 
 		this.logger.log(`WELCOME EMAIL SENDED TO ${to.join(', ')}`, data);

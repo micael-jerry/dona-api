@@ -23,7 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "seed": "prisma db seed",
     "reset:db:test": "prisma migrate reset --force && prisma db seed",
-    "test:e2e": "prisma generate && pnpm run reset:db:test && jest --config ./test/jest-e2e.json",
+    "test:e2e": "prisma generate && pnpm run reset:db:test && NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-e2e.json",
     "prepare": "husky"
   },
   "dependencies": {

@@ -59,8 +59,8 @@ export class ResetPasswordEmail {
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f622, #6366f122);
-            border: 2px solid #3b82f6;
+            background: linear-gradient(135deg, #1d4ed822, #3b82f622);
+            border: 2px solid #1d4ed8;
             font-size: 28px;
           }
           .title {
@@ -90,7 +90,7 @@ export class ResetPasswordEmail {
           .cta-btn {
             display: block;
             text-align: center;
-            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
             color: #ffffff;
             text-decoration: none;
             font-weight: 700;
@@ -109,7 +109,7 @@ export class ResetPasswordEmail {
             word-break: break-all;
           }
           .link-box a {
-            color: #3b82f6;
+            color: #1d4ed8;
             font-size: 13px;
             text-decoration: none;
           }
@@ -144,7 +144,7 @@ export class ResetPasswordEmail {
 
             <div class="content">
               <p>
-                We received a request to reset the password for your <strong style="color:#3b82f6;">Dona</strong> account. Click the button below to choose a new password.
+                We received a request to reset the password for your <strong style="color:#1d4ed8;">Dona</strong> account. Click the button below to choose a new password.
               </p>
 
               <a href="${resetLink}" class="cta-btn">🔑 Reset My Password</a>
@@ -156,7 +156,7 @@ export class ResetPasswordEmail {
 
               <p class="warning">⚠️ This link will expire in 1 hour. If you did not request a password reset, you can safely ignore this email — your account remains secure.</p>
 
-              <p style="color:#94a3b8; margin-top: 24px;">Stay safe on the road,<br><strong style="color:#f59e0b;">The Dona Team 🚦</strong></p>
+              <p style="color:#94a3b8; margin-top: 24px;">Stay safe on the road,<br><strong style="color:#fbbf24;">The Dona Team 🚦</strong></p>
             </div>
           </div>
 

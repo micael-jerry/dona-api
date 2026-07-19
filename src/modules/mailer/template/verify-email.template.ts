@@ -59,8 +59,8 @@ export class VerifyEmail {
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b22, #ef444422);
-            border: 2px solid #f59e0b;
+            background: linear-gradient(135deg, #fbbf2422, #fcd34d22);
+            border: 2px solid #fbbf24;
             font-size: 28px;
           }
           .title {
@@ -90,7 +90,7 @@ export class VerifyEmail {
           .cta-btn {
             display: block;
             text-align: center;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
             color: #ffffff;
             text-decoration: none;
             font-weight: 700;
@@ -109,7 +109,7 @@ export class VerifyEmail {
             word-break: break-all;
           }
           .link-box a {
-            color: #f59e0b;
+            color: #1d4ed8;
             font-size: 13px;
             text-decoration: none;
           }
@@ -144,7 +144,7 @@ export class VerifyEmail {
 
             <div class="content">
               <p>
-                Thanks for joining <strong style="color:#f59e0b;">Dona</strong>! To activate your account and start reporting road events, please confirm your email address by clicking the button below.
+                Thanks for joining <strong style="color:#1d4ed8;">Dona</strong>! To activate your account and start reporting road events, please confirm your email address by clicking the button below.
               </p>
 
               <a href="${verificationLink}" class="cta-btn">✅ Verify My Email</a>
@@ -156,7 +156,7 @@ export class VerifyEmail {
 
               <p class="warning">⚠️ This link will expire in 24 hours. If you did not create a Dona account, you can safely ignore this email.</p>
 
-              <p style="color:#94a3b8; margin-top: 24px;">Stay safe on the road,<br><strong style="color:#f59e0b;">The Dona Team 🚦</strong></p>
+              <p style="color:#94a3b8; margin-top: 24px;">Stay safe on the road,<br><strong style="color:#fbbf24;">The Dona Team 🚦</strong></p>
             </div>
           </div>
 

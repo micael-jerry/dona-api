@@ -114,7 +114,7 @@ export class WelcomeEmail {
           .cta-btn {
             display: block;
             text-align: center;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
             color: #ffffff;
             text-decoration: none;
             font-weight: 700;
@@ -153,7 +153,7 @@ export class WelcomeEmail {
 
             <div class="content">
               <p>
-                You've just joined <strong style="color:#f59e0b;">Dona</strong> — the community-driven platform for real-time road event signaling. Together, we make roads safer for everyone.
+                You've just joined <strong style="color:#1d4ed8;">Dona</strong> — the community-driven platform for real-time road event signaling. Together, we make roads safer for everyone.
               </p>
 
               <div class="info-box">
@@ -177,7 +177,7 @@ export class WelcomeEmail {
               </div>
 
               <p>If you have any questions, our team is here to help.</p>
-              <p style="color:#94a3b8;">Stay safe on the road,<br><strong style="color:#f59e0b;">The Dona Team 🚦</strong></p>
+              <p style="color:#94a3b8;">Stay safe on the road,<br><strong style="color:#fbbf24;">The Dona Team 🚦</strong></p>
             </div>
           </div>
 

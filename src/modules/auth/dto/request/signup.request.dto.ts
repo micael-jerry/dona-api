@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsUrl, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsUrl, IsString, MaxLength, MinLength, Matches } from 'class-validator';
 
 export class SignupRequest {
 	@ApiProperty({ example: 'user@example.com' })
@@ -10,6 +10,7 @@ export class SignupRequest {
 	@IsString({ message: 'pseudo must be a string' })
 	@MinLength(5, { message: 'pseudo must be at least 5 characters long' })
 	@MaxLength(25, { message: 'pseudo must be at most 25 characters long' })
+	@Matches(/^[a-zA-Z0-9_]+$/, { message: 'pseudo must contain only alphanumeric characters and underscores' })
 	pseudo!: string;
 
 	@ApiProperty({ minLength: 3, maxLength: 100, example: 'John Doe' })

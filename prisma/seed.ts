@@ -55,14 +55,36 @@ async function main() {
 			avatar: 'https://api.dicebear.com/10.x/avataaars-neutral/png?seed=bob',
 			isEmailVerified: true,
 		},
+		{
+			id: 'clr72abcd000008l1abcd1237',
+			email: 'unverified@dona.app',
+			pseudo: 'unverified_user',
+			name: 'Unverified User',
+			password: await hashPassword('Unverified@1234!'),
+			role: UserRole.USER,
+			avatar: 'https://api.dicebear.com/10.x/avataaars-neutral/png?seed=unverified',
+			isEmailVerified: false,
+		},
+		{
+			id: 'clr72abcd000008l1abcd1238',
+			email: 'oauth@dona.app',
+			pseudo: 'oauth_user',
+			name: 'OAuth User',
+			password: null,
+			role: UserRole.USER,
+			avatar: 'https://api.dicebear.com/10.x/avataaars-neutral/png?seed=oauth',
+			isEmailVerified: true,
+			isOAuthGoogleProvider: true,
+		},
 	];
 
 	for (const userData of regularUsers) {
 		const user = await prisma.user.upsert({
 			where: { email: userData.email },
 			update: {
-				isEmailVerified: true,
+				isEmailVerified: userData.isEmailVerified,
 				password: userData.password,
+				isOAuthGoogleProvider: userData.isOAuthGoogleProvider ?? false,
 			},
 			create: userData,
 		});

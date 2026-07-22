@@ -6,6 +6,7 @@ import { envSchema } from './config/env.schema';
 import { swaggerConfig } from './config/swagger';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AccountModule } from './modules/account/account.module';
 import { DbModule } from './db/db.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { DbModule } from './db/db.module';
 		HealthModule,
 		DbModule,
 		AuthModule,
+		AccountModule,
 	],
 })
 export class AppModule {}

@@ -74,11 +74,12 @@ describe('AuthController (e2e)', () => {
 	});
 
 	it('/auth/signup (POST) - create a new user', async () => {
+		const uniqueKey = Date.now();
 		const response = await request(app.getHttpServer())
 			.post('/auth/signup')
 			.send({
-				email: 'newuser@dona.app',
-				pseudo: 'newuser',
+				email: `newuser_${uniqueKey}@dona.app`,
+				pseudo: `user_${uniqueKey}`,
 				name: 'New User',
 				password: 'NewUser@1234!',
 			})
@@ -86,7 +87,7 @@ describe('AuthController (e2e)', () => {
 
 		const body = response.body as { id: string; email: string; pseudo: string };
 		expect(body).toHaveProperty('id');
-		expect(body.email).toBe('newuser@dona.app');
-		expect(body.pseudo).toBe('newuser');
+		expect(body.email).toBe(`newuser_${uniqueKey}@dona.app`);
+		expect(body.pseudo).toBe(`user_${uniqueKey}`);
 	});
 });

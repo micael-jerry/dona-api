@@ -32,7 +32,7 @@ export class AccountController {
 	@ApiOperation({
 		summary: 'Update profile information',
 		description:
-			'Allows an authenticated user to update their simple profile details such as name, pseudo, and avatar.',
+			'Allows an authenticated user to update their simple profile details such as name, pseudo, email, and avatar.',
 	})
 	@ApiBody({ type: UpdateProfileRequest })
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'Profile updated successfully' })

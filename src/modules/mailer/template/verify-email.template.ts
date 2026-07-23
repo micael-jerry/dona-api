@@ -1,8 +1,9 @@
 import { User } from '../../../../prisma/generated/client';
+import { APP_LOGO_URL } from '../../../common/constants/app-logo.constant';
 
 export class VerifyEmail {
 	static getTemplate(createdUser: User, emailVerificationToken: string, uiUrl: string) {
-		const logoUrl = `${uiUrl}/logo.png`;
+		const logoUrl = APP_LOGO_URL;
 		const verificationLink = `${uiUrl}/verify-email?token=${emailVerificationToken}`;
 
 		return `

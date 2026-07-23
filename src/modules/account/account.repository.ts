@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
+import { UserUpdateInput } from '../../../prisma/generated/models';
 import { DbService } from '../../db/db.service';
-import { UpdateProfileRequest } from './dto/request';
 
 @Injectable()
 export class AccountRepository {
@@ -37,20 +37,33 @@ export class AccountRepository {
 	}
 
 	/**
+	 * Finds a user by email excluding a specific user ID.
+	 * Used for checking email availability during profile updates.
+	 *
+	 * @param {string} email - The email to search.
+	 * @param {string} excludeUserId - User ID to exclude from match.
+	 * @returns {Promise<User | null>} The user if found, null otherwise.
+	 */
+	async findByEmailExcludingUser(email: string, excludeUserId: string): Promise<User | null> {
+		return this.dbService.user.findFirst({
+			where: {
+				email,
+				NOT: { id: excludeUserId },
+			},
+		});
+	}
+
+	/**
 	 * Updates simple profile fields for a user.
 	 *
 	 * @param {string} userId - The ID of the user.
-	 * @param {UpdateProfileRequest} data - The updated profile data.
+	 * @param {UserUpdateInput} data - The updated profile data.
 	 * @returns {Promise<User>} The updated user.
 	 */
-	async updateProfile(userId: string, data: UpdateProfileRequest): Promise<User> {
+	async updateProfile(userId: string, data: UserUpdateInput): Promise<User> {
 		return this.dbService.user.update({
 			where: { id: userId },
-			data: {
-				...(data.name !== undefined && { name: data.name }),
-				...(data.pseudo !== undefined && { pseudo: data.pseudo }),
-				...(data.avatar !== undefined && { avatar: data.avatar }),
-			},
+			data,
 		});
 	}
 

@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class UpdateProfileRequest {
 	@ApiPropertyOptional({ minLength: 3, maxLength: 100, example: 'John Doe', description: 'Updated full name' })
@@ -16,6 +16,11 @@ export class UpdateProfileRequest {
 	@MaxLength(25, { message: 'pseudo must be at most 25 characters long' })
 	@Matches(/^[a-zA-Z0-9_]+$/, { message: 'pseudo must contain only alphanumeric characters and underscores' })
 	pseudo?: string;
+
+	@ApiPropertyOptional({ example: 'john.doe@example.com', description: 'Updated email address' })
+	@IsOptional()
+	@IsEmail({}, { message: 'email must be a valid email address' })
+	email?: string;
 
 	@ApiPropertyOptional({ example: 'https://example.com/avatar.png', description: 'Updated avatar URL' })
 	@IsOptional()

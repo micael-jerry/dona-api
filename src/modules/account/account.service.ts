@@ -1,5 +1,6 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
+import { UserUpdateInput } from '../../../prisma/generated/models';
 import { HashingService } from '../../common/hashing/hashing.service';
 import { AuthUtil } from '../auth/auth.util';
 import { SpecialTokenPurpose } from '../auth/payload/special.payload';
@@ -28,15 +29,18 @@ export class AccountService {
 	}
 
 	/**
-	 * Updates simple profile details (name, pseudo, avatar) for the authenticated user.
-	 * Checks pseudo uniqueness if modified.
+	 * Updates simple profile details (name, pseudo, email, avatar) for the authenticated user.
+	 * Checks pseudo and email uniqueness if modified.
+	 * If email is changed, marks email as unverified and sends a new verification email.
 	 *
 	 * @param {string} userId - User ID.
 	 * @param {UpdateProfileRequest} updateData - Profile update data.
 	 * @returns {Promise<User>} The updated user entity.
-	 * @throws {ConflictException} If the chosen pseudo is already taken.
+	 * @throws {ConflictException} If the chosen pseudo or email is already taken.
 	 */
 	async updateProfile(userId: string, updateData: UpdateProfileRequest): Promise<User> {
+		const currentUser = await this.accountRepository.findById(userId);
+
 		if (updateData.pseudo) {
 			const existingUserWithPseudo = await this.accountRepository.findByPseudoExcludingUser(updateData.pseudo, userId);
 			if (existingUserWithPseudo) {
@@ -44,7 +48,28 @@ export class AccountService {
 			}
 		}
 
-		return this.accountRepository.updateProfile(userId, updateData);
+		let isEmailChanged = false;
+		if (updateData.email && updateData.email !== currentUser.email) {
+			const existingUserWithEmail = await this.accountRepository.findByEmailExcludingUser(updateData.email, userId);
+			if (existingUserWithEmail) {
+				throw new ConflictException('Email is already in use by another user');
+			}
+			isEmailChanged = true;
+		}
+
+		const dataToUpdate: UserUpdateInput = {
+			...updateData,
+			...(isEmailChanged && { isEmailVerified: false }),
+		};
+
+		const updatedUser = await this.accountRepository.updateProfile(userId, dataToUpdate);
+
+		if (isEmailChanged) {
+			const token = await this.authUtil.genSpecialToken(updatedUser, SpecialTokenPurpose.VERIFY_EMAIL);
+			await this.mailerService.sendVerificationEmail(updatedUser, token);
+		}
+
+		return updatedUser;
 	}
 
 	/**

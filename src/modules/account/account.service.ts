@@ -1,9 +1,11 @@
+import 'multer';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
 import { UserUpdateInput } from '../../../prisma/generated/models';
 import { HashingService } from '../../common/hashing/hashing.service';
 import { AuthUtil } from '../auth/auth.util';
 import { SpecialTokenPurpose } from '../auth/payload/special.payload';
+import { BucketS3Service } from '../bucketS3/bucketS3.service';
 import { MailerService } from '../mailer/mailer.service';
 import { AccountRepository } from './account.repository';
 import { ChangePasswordRequest, DeleteAccountRequest, UpdateProfileRequest } from './dto/request';
@@ -16,6 +18,7 @@ export class AccountService {
 		private readonly hashingService: HashingService,
 		private readonly authUtil: AuthUtil,
 		private readonly mailerService: MailerService,
+		private readonly bucketS3Service: BucketS3Service,
 	) {}
 
 	/**
@@ -70,6 +73,28 @@ export class AccountService {
 		}
 
 		return updatedUser;
+	}
+
+	/**
+	 * Uploads a new avatar image to Supabase S3 bucket and updates the user profile record.
+	 * If an existing avatar was stored in Supabase S3, it is deleted automatically.
+	 *
+	 * @param {string} userId - User ID.
+	 * @param {Express.Multer.File} file - Uploaded image file.
+	 * @returns {Promise<User>} The updated user entity.
+	 */
+	async updateAvatar(userId: string, file: Express.Multer.File): Promise<User> {
+		const currentUser = await this.accountRepository.findById(userId);
+
+		// Upload file to Supabase S3 bucket in 'avatars' folder
+		const avatarUrl = await this.bucketS3Service.uploadFile(file, 'avatars');
+
+		// Cleanup old avatar if it was stored in our Supabase S3 bucket
+		if (currentUser.avatar && currentUser.avatar.includes('/object/public/')) {
+			await this.bucketS3Service.deleteFile(currentUser.avatar);
+		}
+
+		return this.accountRepository.updateProfile(userId, { avatar: avatarUrl });
 	}
 
 	/**
@@ -140,6 +165,11 @@ export class AccountService {
 			if (!isPasswordValid) {
 				throw new BadRequestException('Invalid password for account deletion confirmation');
 			}
+		}
+
+		// Delete avatar from S3 if present
+		if (user.avatar && user.avatar.includes('/object/public/')) {
+			await this.bucketS3Service.deleteFile(user.avatar);
 		}
 
 		await this.accountRepository.deleteUser(userId);

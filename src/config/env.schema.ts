@@ -12,4 +12,9 @@ export const envSchema = Joi.object({
 	GOOGLE_CLIENT_ID: Joi.string().required(),
 	GOOGLE_CLIENT_SECRET: Joi.string().required(),
 	GOOGLE_REDIRECT_URI: Joi.string().uri().required(),
+	SUPABASE_S3_BUCKET_NAME: Joi.string().required(),
+	SUPABASE_S3_REGION: Joi.string().required(),
+	SUPABASE_S3_ACCESS_KEY_ID: Joi.string().required(),
+	SUPABASE_S3_SECRET_ACCESS_KEY: Joi.string().required(),
+	SUPABASE_S3_ENDPOINT: Joi.string().uri().required(),
 });

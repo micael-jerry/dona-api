@@ -2,7 +2,7 @@ import { User } from '../../../../prisma/generated/client';
 import { APP_LOGO_URL } from '../../../common/constants/app-logo.constant';
 
 export class WelcomeEmail {
-	static getTemplate(createdUser: User, uiUrl: string) {
+	static getTemplate(createdUser: User) {
 		const logoUrl = APP_LOGO_URL;
 
 		return `

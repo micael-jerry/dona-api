@@ -1,8 +1,9 @@
 import { User } from '../../../../prisma/generated/client';
+import { APP_LOGO_URL } from '../../../common/constants/app-logo.constant';
 
 export class ResetPasswordEmail {
 	static getTemplate(user: User, resetPasswordToken: string, uiUrl: string) {
-		const logoUrl = `${uiUrl}/logo.png`;
+		const logoUrl = APP_LOGO_URL;
 		const resetLink = `${uiUrl}/reset-password?token=${resetPasswordToken}`;
 
 		return `

@@ -20,4 +20,11 @@ export default registerAs('app', () => ({
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		callbackUrl: process.env.GOOGLE_REDIRECT_URI,
 	},
+	bucketS3: {
+		name: process.env.SUPABASE_S3_BUCKET_NAME,
+		region: process.env.SUPABASE_S3_REGION,
+		accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY_ID,
+		secretAccessKey: process.env.SUPABASE_S3_SECRET_ACCESS_KEY,
+		endpoint: process.env.SUPABASE_S3_ENDPOINT,
+	},
 }));

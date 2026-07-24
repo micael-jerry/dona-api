@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { MailObjectEntity } from './entity/mail-object.entity';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NodeEnv } from '../../config/app';
 import { Resend } from 'resend';
-import { Logger } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
-import { WelcomeEmail } from './template/welcome.template';
-import { VerifyEmail } from './template/verify-email.template';
+import { NodeEnv } from '../../config/app';
+import { MailObjectEntity } from './entity/mail-object.entity';
 import { ResetPasswordEmail } from './template/reset-password.template';
+import { VerifyEmail } from './template/verify-email.template';
+import { WelcomeEmail } from './template/welcome.template';
 
 @Injectable()
 export class MailerService {
@@ -60,7 +59,7 @@ export class MailerService {
 		await this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Welcome to Dona app',
-			html: WelcomeEmail.getTemplate(createdUser, this.uiUrl),
+			html: WelcomeEmail.getTemplate(createdUser),
 		});
 	}
 

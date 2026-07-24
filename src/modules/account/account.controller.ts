@@ -1,5 +1,21 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import 'multer';
+import {
+	Body,
+	Controller,
+	Delete,
+	FileTypeValidator,
+	Get,
+	HttpCode,
+	HttpStatus,
+	MaxFileSizeValidator,
+	ParseFilePipe,
+	Patch,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -43,6 +59,44 @@ export class AccountController {
 		@Body() updateProfileDto: UpdateProfileRequest,
 	): Promise<UserResponse> {
 		const user = await this.accountService.updateProfile(id, updateProfileDto);
+		return UserMapper.toDto(user);
+	}
+
+	@ApiOperation({
+		summary: 'Update user avatar',
+		description: 'Uploads a new avatar image to Supabase S3 storage and updates the user profile.',
+	})
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+					description: 'Avatar image file (jpeg, png, webp, gif, max 5MB)',
+				},
+			},
+			required: ['file'],
+		},
+	})
+	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'Avatar updated successfully' })
+	@ApiCommonHttpErrorDecorator()
+	@UseInterceptors(FileInterceptor('file'))
+	@Patch('avatar')
+	async updateAvatar(
+		@CurrentUser() { id }: UserPayload,
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+					new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp|gif)$/ }),
+				],
+			}),
+		)
+		file: Express.Multer.File,
+	): Promise<UserResponse> {
+		const user = await this.accountService.updateAvatar(id, file);
 		return UserMapper.toDto(user);
 	}
 

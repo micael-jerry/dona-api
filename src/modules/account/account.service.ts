@@ -62,7 +62,7 @@ export class AccountService {
 
 		const dataToUpdate: UserUpdateInput = {
 			...updateData,
-			...(isEmailChanged && { isEmailVerified: false }),
+			...(isEmailChanged && { isEmailVerified: false, isOAuthGoogleProvider: false }),
 		};
 
 		const updatedUser = await this.accountRepository.updateProfile(userId, dataToUpdate);

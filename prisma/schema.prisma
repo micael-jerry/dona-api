@@ -18,18 +18,41 @@ enum UserRole {
   ADMIN
 }
 
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum Language {
+  FR
+  EN
+  ES
+}
+
 model User {
-  id                    String   @id @default(cuid())
-  email                 String   @unique
-  pseudo                String   @unique @db.VarChar(25)
-  name                  String   @db.VarChar(100)
-  password              String?  @db.VarChar(100)
-  role                  UserRole @default(USER)
-  avatar                String?  @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
-  isEmailVerified       Boolean  @default(false)
-  isOAuthGoogleProvider Boolean  @default(false)
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                    String        @id @default(cuid())
+  email                 String        @unique
+  pseudo                String        @unique @db.VarChar(25)
+  name                  String        @db.VarChar(100)
+  password              String?       @db.VarChar(100)
+  role                  UserRole      @default(USER)
+  avatar                String?       @default("https://api.dicebear.com/10.x/avataaars-neutral/png?seed=Felix")
+  isEmailVerified       Boolean       @default(false)
+  isOAuthGoogleProvider Boolean       @default(false)
+  settings              UserSettings?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+model UserSettings {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme     Theme    @default(SYSTEM)
+  language  Language @default(FR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 /// Tracks consumed single-use JWT IDs (JTI) to prevent token reuse.
@@ -39,4 +62,3 @@ model UsedToken {
   expiresAt DateTime                  // mirrors token expiry — allows future cleanup jobs
   usedAt    DateTime @default(now())  // audit: when the token was consumed
 }
-

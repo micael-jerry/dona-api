@@ -34,8 +34,8 @@ export class UserSettingsRepository {
 			where: { userId },
 			create: {
 				userId,
-				...(data.theme && typeof data.theme === 'string' ? { theme: data.theme as any } : {}),
-				...(data.language && typeof data.language === 'string' ? { language: data.language as any } : {}),
+				...(typeof data.theme === 'string' && { theme: data.theme }),
+				...(typeof data.language === 'string' && { language: data.language }),
 			},
 			update: data,
 		});

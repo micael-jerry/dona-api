@@ -46,6 +46,8 @@ export class AuthGoogleController {
 	@UseGuards(LoginGoogleGuard)
 	async redirect(@CurrentUser() currentUser: UserPayload, @Res() response: Response): Promise<void> {
 		const token: string = await this.authUtil.genAuthToken(currentUser);
-		response.redirect(`${this.uiUrl}/auth/google/success?token=${token}`);
+		const url = new URL(`${this.uiUrl}/api/auth/google/callback`);
+		url.searchParams.set('token', token);
+		response.redirect(url.toString());
 	}
 }

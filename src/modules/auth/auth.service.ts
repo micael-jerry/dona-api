@@ -4,10 +4,10 @@ import { HashingService } from '../../common/hashing/hashing.service';
 import { MailerService } from '../mailer/mailer.service';
 import { AuthRepository } from './auth.repository';
 import { AuthUtil } from './auth.util';
-import { UserPayload } from './payload/user.payload';
-import { SpecialPayload, SpecialTokenPurpose } from './payload/special.payload';
-import { SignupRequest, ResetPasswordRequestRequest, ResetPasswordRequest } from './dto/request';
+import { ResetPasswordRequest, ResetPasswordRequestRequest, SignupRequest } from './dto/request';
 import { ResetPasswordRequestResponse } from './dto/response';
+import { SpecialPayload, SpecialTokenPurpose } from './payload/special.payload';
+import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class AuthService {

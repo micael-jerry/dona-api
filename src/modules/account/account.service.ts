@@ -1,5 +1,5 @@
-import 'multer';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import 'multer';
 import { User } from '../../../prisma/generated/client';
 import { UserUpdateInput } from '../../../prisma/generated/models';
 import { HashingService } from '../../common/hashing/hashing.service';

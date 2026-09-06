@@ -1,17 +1,17 @@
 import { Global, Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { HashingModule } from '../../common/hashing/hashing.module';
+import { MailerModule } from '../mailer/mailer.module';
+import { UserModule } from '../user/user.module';
+import { AuthGoogleController } from './auth-google.controller';
+import { AuthGoogleService } from './auth-google.service';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
-import { HashingModule } from '../../common/hashing/hashing.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
 import { AuthUtil } from './auth.util';
-import { MailerModule } from '../mailer/mailer.module';
 import { AppAuthGuard } from './guards/app-auth.guard';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { AuthGoogleService } from './auth-google.service';
-import { AuthGoogleController } from './auth-google.controller';
-import { UserModule } from '../user/user.module';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Global()
 @Module({

@@ -1,10 +1,10 @@
 import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { AuthType } from '../auth/types/auth.type';
 import { PingRequest } from './dto/ping-request.dto';
 import { PingResponse } from './dto/ping-response.dto';
 import { HealthService } from './health.service';
-import { Auth } from '../auth/decorators/auth.decorator';
-import { AuthType } from '../auth/types/auth.type';
 
 @Controller()
 export class HealthController {

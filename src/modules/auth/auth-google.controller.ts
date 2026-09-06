@@ -1,12 +1,12 @@
 import { Controller, Get, HttpStatus, Res, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
-import { LoginGoogleGuard } from './guards/login-google.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { UserPayload } from './payload/user.payload';
-import { AuthUtil } from './auth.util';
 import { ConfigService } from '@nestjs/config';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
+import { AuthUtil } from './auth.util';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { LoginGoogleGuard } from './guards/login-google.guard';
+import { UserPayload } from './payload/user.payload';
 
 @ApiTags('Auth Google')
 @Controller('auth/google')

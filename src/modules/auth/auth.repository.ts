@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../prisma/generated/client';
-import { DbService } from '../../db/db.service';
 import { UserCreateInput } from '../../../prisma/generated/models';
+import { DbService } from '../../db/db.service';
 
 @Injectable()
 export class AuthRepository {

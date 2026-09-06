@@ -1,10 +1,10 @@
-import { Strategy } from 'passport-local';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from '../auth.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
 import { User } from '../../../../prisma/generated/client';
-import { UserPayload } from '../payload/user.payload';
 import { UserMapper } from '../../user/user.mapper';
+import { AuthService } from '../auth.service';
+import { UserPayload } from '../payload/user.payload';
 
 /**
  * Passport strategy for local authentication using email and password.

@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Reflector } from '@nestjs/core';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 import { UserRole } from '../../../../prisma/generated/browser';
-import { Request } from 'express';
-import { UserPayload } from '../payload/user.payload';
 import { Roles } from '../decorators/roles.decorator';
+import { UserPayload } from '../payload/user.payload';
 
 /**
  * Guard that checks if the authenticated user has the necessary roles

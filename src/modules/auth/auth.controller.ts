@@ -1,24 +1,24 @@
 import { Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserResponse } from '../user/dto/user-response.dto';
+import { User } from '../../../prisma/generated/client';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
+import { UserResponse } from '../user/dto/user-response.dto';
 import { UserMapper } from '../user/user.mapper';
+import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { UserPayload } from './payload/user.payload';
 import { Auth } from './decorators/auth.decorator';
-import { AuthType } from './types/auth.type';
+import { CurrentUser } from './decorators/current-user.decorator';
 import {
-	SignupRequest,
 	LoginRequest,
-	VerifyEmailRequest,
-	ResetPasswordRequestRequest,
 	ResetPasswordRequest,
+	ResetPasswordRequestRequest,
+	SignupRequest,
+	VerifyEmailRequest,
 } from './dto/request';
 import { LoginResponse, ResetPasswordRequestResponse } from './dto/response';
 import { LoginLocalGuard } from './guards/login-local.guard';
-import { UserService } from '../user/user.service';
-import { User } from '../../../prisma/generated/client';
+import { UserPayload } from './payload/user.payload';
+import { AuthType } from './types/auth.type';
 
 @Controller('auth')
 export class AuthController {

@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { Request } from 'express';
-import { AuthType } from '../types/auth.type';
 import { Reflector } from '@nestjs/core';
+import { Request } from 'express';
+import { AuthUtil } from '../auth.util';
 import { AUTH_TYPE_METADATA_KEY } from '../constants/auth-type-metadata-key.constant';
 import { UserPayload } from '../payload/user.payload';
-import { AuthUtil } from '../auth.util';
+import { AuthType } from '../types/auth.type';
 
 /**
  * Global authentication guard that verifies JWT tokens.

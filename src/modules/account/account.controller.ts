@@ -1,4 +1,3 @@
-import 'multer';
 import {
 	Body,
 	Controller,
@@ -16,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import 'multer';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';

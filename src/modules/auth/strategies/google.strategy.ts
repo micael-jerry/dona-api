@@ -1,12 +1,12 @@
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { User } from '../../../../prisma/generated/client';
+import { UserMapper } from '../../user/user.mapper';
 import { AuthGoogleService } from '../auth-google.service';
-import { Injectable } from '@nestjs/common';
 import { AuthUtil } from '../auth.util';
 import { UserPayload } from '../payload/user.payload';
-import { UserMapper } from '../../user/user.mapper';
 
 /**
  * Passport strategy for Google OAuth 2.0 authentication.

@@ -24,7 +24,7 @@ function docBuilder(app: INestApplication, conf: SwaggerConfig) {
 }
 
 async function run() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<INestApplication>(AppModule);
 	const configService = app.get(ConfigService);
 	const port: number = configService.getOrThrow<number>('app.port');
 	const swaggerConfig: SwaggerConfig = configService.getOrThrow<SwaggerConfig>('swagger');

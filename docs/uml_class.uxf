@@ -1,4 +1,4 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>260</x><y>60</y><w>210</w><h>200</h></coordinates><panel_attributes>User
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>260</x><y>125</y><w>210</w><h>200</h></coordinates><panel_attributes>User
 -
 *id: string*
 email: string
@@ -11,13 +11,13 @@ isEmailVerified: boolean
 isOAuthGoogleProvider: boolean
 createdAt: datetime
 updatedAt: datetime
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>60</y><w>130</w><h>80</h></coordinates><panel_attributes>UsedToken
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>125</y><w>130</w><h>80</h></coordinates><panel_attributes>UsedToken
 -
 *jti: string*
 expiresAt: datetime
-usedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>350</x><y>250</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;-
+usedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>350</x><y>315</y><w>40</w><h>130</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>360</y><w>210</w><h>130</h></coordinates><panel_attributes>UserSettings
+m2=*</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>UMLClass</id><coordinates><x>260</x><y>425</y><w>210</w><h>130</h></coordinates><panel_attributes>UserSettings
 -
 *id: string*
 /*userId: string*/
@@ -25,43 +25,45 @@ theme: LIGHT | DARK | SYSTEM
 language: FR | EN | ES
 createdAt: datetime
 updatedAt: datetime
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>830</x><y>60</y><w>210</w><h>200</h></coordinates><panel_attributes>Event
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>830</x><y>125</y><w>210</w><h>200</h></coordinates><panel_attributes>Event
 -
 *id: string*
 /*userId: string*/
 /*eventCategoryId: string*/
 severityLevel: number
+statusLevel: number
 coords: Geography(point)
+title: string
 description: string
 address: string
 createdAt: datetime
-updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>90</y><w>390</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>155</y><w>390</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;370;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>870</x><y>340</y><w>150</w><h>100</h></coordinates><panel_attributes>EventCategory
+m2=*</panel_attributes><additional_attributes>10;10;370;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>870</x><y>405</y><w>150</w><h>100</h></coordinates><panel_attributes>EventCategory
 -
 *id: string*
 value: string
 createdAt: datetime
-updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>930</x><y>250</y><w>40</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>930</x><y>315</y><w>40</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;90;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>130</y><w>160</w><h>110</h></coordinates><panel_attributes>UserConfirmEvent
+m2=*</panel_attributes><additional_attributes>10;90;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>195</y><w>160</w><h>110</h></coordinates><panel_attributes>UserConfirmEvent
 -
 *id: string*
 /*userId: string*/
 /*eventId: string*/
 createdAt: datetime
-updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>170</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>235</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>170</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>235</y><w>130</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>110;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>250</y><w>160</w><h>110</h></coordinates><panel_attributes>UserResolveEvent
+m2=*</panel_attributes><additional_attributes>110;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>315</y><w>160</w><h>110</h></coordinates><panel_attributes>UserResolveEvent
 -
 *id: string*
 /*userId: string*/
 /*eventId: string*/
 createdAt: datetime
-updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>230</y><w>130</w><h>70</h></coordinates><panel_attributes>lt=&lt;-
+updatedAt: datetime</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>460</x><y>295</y><w>130</w><h>70</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;60;10;60;40;110;40</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>230</y><w>130</w><h>70</h></coordinates><panel_attributes>lt=&lt;-
+m2=*</panel_attributes><additional_attributes>10;10;60;10;60;40;110;40</additional_attributes></element><element><id>Relation</id><coordinates><x>720</x><y>295</y><w>130</w><h>70</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
 m2=*</panel_attributes><additional_attributes>110;10;60;10;60;40;10;40</additional_attributes></element></diagram>

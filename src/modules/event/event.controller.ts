@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
-import { EventService } from './event.service';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AppAuthGuard } from '../auth/guards/app-auth.guard';
+import { AuthType } from '../auth/types/auth.type';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventEntity } from './entities/event.entity';
+import { EventService } from './event.service';
 
 @ApiTags('Events')
 @Controller('events')
 export class EventController {
 	constructor(private readonly eventsService: EventService) {}
 
+	@Auth(AuthType.AUTHENTICATED)
+	@UseGuards(AppAuthGuard)
 	@Post()
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Create a new event' })
@@ -18,10 +24,9 @@ export class EventController {
 		description: 'The event has been created successfully.',
 		type: EventEntity,
 	})
-	create(@Body() createEventDto: CreateEventDto) {
-		// Remplacer 'USER_ID_MOCK' par l'ID récupéré de votre Request/JWT (ex: req.user.id)
-		const mockUserId = 'clx111222333444555';
-		return this.eventsService.create(mockUserId, createEventDto);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	create(@CurrentUser('id') userId: string, @Body() createEventDto: CreateEventDto) {
+		return this.eventsService.create(userId, createEventDto);
 	}
 
 	@Get()

@@ -13,6 +13,28 @@ async function hashPassword(password: string): Promise<string> {
 async function main() {
 	console.log('🌱 Starting database seeding...');
 
+	// ─── Event Categories ──────────────────────────────────────────────────────
+	const defaultCategories = [
+		{ id: 'cat_accident_01', value: 'Accident' },
+		{ id: 'cat_traffic_02', value: 'Embouteillage' },
+		{ id: 'cat_police_03', value: 'Contrôle de police' },
+		{ id: 'cat_hazard_04', value: 'Danger / Obstacle' },
+		{ id: 'cat_closure_05', value: 'Route fermée' },
+		{ id: 'cat_other_06', value: 'Autre' },
+	];
+
+	for (const cat of defaultCategories) {
+		const category = await prisma.eventCategory.upsert({
+			where: { value: cat.value },
+			update: {},
+			create: {
+				id: cat.id,
+				value: cat.value,
+			},
+		});
+		console.log(`✅ EventCategory ready: ${category.value} (${category.id})`);
+	}
+
 	// ─── Admin User ────────────────────────────────────────────────────────────
 	const adminUser = await prisma.user.upsert({
 		where: { email: 'admin@dona.app' },

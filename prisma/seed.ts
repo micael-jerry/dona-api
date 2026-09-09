@@ -15,12 +15,12 @@ async function main() {
 
 	// ─── Event Categories ──────────────────────────────────────────────────────
 	const defaultCategories = [
-		{ id: 'cat_accident_01', value: 'Accident' },
-		{ id: 'cat_traffic_02', value: 'Embouteillage' },
-		{ id: 'cat_police_03', value: 'Contrôle de police' },
-		{ id: 'cat_hazard_04', value: 'Danger / Obstacle' },
-		{ id: 'cat_closure_05', value: 'Route fermée' },
-		{ id: 'cat_other_06', value: 'Autre' },
+		{ id: 'cat_accident_01', value: 'accident' },
+		{ id: 'cat_traffic_02', value: 'traffic_jam' },
+		{ id: 'cat_police_03', value: 'police' },
+		{ id: 'cat_hazard_04', value: 'hazard' },
+		{ id: 'cat_closure_05', value: 'closure' },
+		{ id: 'cat_other_06', value: 'other' },
 	];
 
 	for (const cat of defaultCategories) {

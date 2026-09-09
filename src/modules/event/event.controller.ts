@@ -29,6 +29,21 @@ export class EventController {
 		return this.eventsService.create(userId, createEventDto);
 	}
 
+	@Auth(AuthType.AUTHENTICATED)
+	@UseGuards(AppAuthGuard)
+	@Get('dona')
+	@ApiOperation({ summary: 'Retrieve the list of all events' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'List of events retrieved.',
+		type: [EventEntity],
+	})
+	findAllPersonalized(@CurrentUser('id') userId: string) {
+		return this.eventsService.findAllPersonalized(userId);
+	}
+
+	@Auth(AuthType.AUTHENTICATED)
+	@UseGuards(AppAuthGuard)
 	@Get()
 	@ApiOperation({ summary: 'Retrieve the list of all events' })
 	@ApiResponse({

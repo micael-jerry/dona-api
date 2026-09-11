@@ -133,7 +133,7 @@ export class EventService {
 				},
 				addressName: e.address,
 				category: e.category?.toLowerCase(),
-				severity: e.severity?.toLowerCase(),
+				severity: e.severity,
 				status: e.status?.toLowerCase(),
 				veracityScore: Number(e.veracityScore),
 				confirmationsCount: Number(e.confirmationsCount),

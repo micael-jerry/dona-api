@@ -121,7 +121,7 @@ export class EventService {
 				LEFT JOIN user_event_count uec ON uec."userId" = u.id
 			;
 		`;
-		let result: any[] = [];
+		const result: any[] = [];
 		data.forEach((e, i) => {
 			result.push({
 				id: e.id,

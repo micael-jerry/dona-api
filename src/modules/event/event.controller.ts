@@ -44,6 +44,19 @@ export class EventController {
 
 	@Auth(AuthType.AUTHENTICATED)
 	@UseGuards(AppAuthGuard)
+	@Get('dona/:id')
+	@ApiOperation({ summary: 'Retrieve on event with the corresponding id.' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'List of events retrieved.',
+		type: [EventEntity],
+	})
+	findOnePersonalized(@CurrentUser('id') userId: string, @Param('id') id: string) {
+		return this.eventsService.findOnePersonalized(userId, id);
+	}
+
+	@Auth(AuthType.AUTHENTICATED)
+	@UseGuards(AppAuthGuard)
 	@Get()
 	@ApiOperation({ summary: 'Retrieve the list of all events' })
 	@ApiResponse({

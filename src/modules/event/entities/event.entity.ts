@@ -12,7 +12,7 @@ export class EventEntity implements Event {
 	@ApiProperty({ example: 'clx1234567890abcdef' })
 	eventCategoryId: string;
 
-	@ApiProperty({ enum: EventSeverity, example: EventSeverity.MEDIUM })
+	@ApiProperty({ enum: EventSeverity, example: EventSeverity.LOW })
 	severity: EventSeverity;
 
 	@ApiProperty({ enum: EventStatus, example: EventStatus.ACTIVE })

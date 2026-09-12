@@ -4,11 +4,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { appConfig } from './config/app';
 import { envSchema } from './config/env.schema';
 import { swaggerConfig } from './config/swagger';
-import { HealthModule } from './modules/health/health.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { AccountModule } from './modules/account/account.module';
-import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 import { DbModule } from './db/db.module';
+import { AccountModule } from './modules/account/account.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { HealthModule } from './modules/health/health.module';
+import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 
 @Module({
 	imports: [

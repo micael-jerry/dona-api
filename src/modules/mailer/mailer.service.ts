@@ -1,24 +1,33 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
 import { User } from '../../../prisma/generated/client';
 import { NodeEnv } from '../../config/app';
 import { MailObjectEntity } from './entity/mail-object.entity';
 import { ResetPasswordEmail } from './template/reset-password.template';
 import { VerifyEmail } from './template/verify-email.template';
 import { WelcomeEmail } from './template/welcome.template';
+import nodemailer, { SendMailOptions, SMTPSentMessageInfo, SMTPTransportOptions, type Mail } from 'nodemailer';
 
 @Injectable()
 export class MailerService {
 	private readonly logger = new Logger(MailerService.name);
-	private readonly resend: Resend;
 	private readonly uiUrl: string;
 	private readonly nodeEnv: NodeEnv;
+	private readonly transporter: SMTPTransportOptions;
+	private readonly transport: Mail<SMTPSentMessageInfo>;
 
 	constructor(private readonly configService: ConfigService) {
-		this.resend = new Resend(this.configService.getOrThrow<string>('app.resend.apiKey'));
 		this.uiUrl = this.configService.getOrThrow<string>('app.uiUrl');
 		this.nodeEnv = this.configService.getOrThrow<NodeEnv>('app.env');
+		this.transporter = {
+			host: this.configService.getOrThrow<string>('app.smtp.host'),
+			port: this.configService.getOrThrow<number>('app.smtp.port'),
+			auth: {
+				user: this.configService.getOrThrow<string>('app.smtp.auth.user'),
+				pass: this.configService.getOrThrow<string>('app.smtp.auth.pass'),
+			},
+		};
+		this.transport = nodemailer.createTransport(this.transporter);
 	}
 
 	/**
@@ -29,24 +38,25 @@ export class MailerService {
 	 * @returns {Promise<void>}
 	 * @private
 	 */
-	private async sendEmail({ to, subject, html }: MailObjectEntity): Promise<void> {
+	private sendEmail({ to, subject, html }: MailObjectEntity): void {
 		// INFO: Not send email on test environment
 		if (this.nodeEnv === NodeEnv.TEST) {
 			return;
 		}
 
-		const { data, error } = await this.resend.emails.send({
-			from: 'Dona app <no-reply@resend.dev>',
-			to: to,
-			subject: subject,
-			html: html,
+		const sendMailOptions: SendMailOptions = {
+			from: 'noreply@dona.app',
+			to,
+			subject,
+			html,
+		};
+
+		this.transport.sendMail(sendMailOptions, (err, info) => {
+			if (err) {
+				this.logger.error(`ERROR TO SEND WELCOME EMAIL TO MAIL ${to.join(', ')}`, err);
+			}
+			this.logger.log(`WELCOME EMAIL SENDED TO ${to.join(', ')}`, info);
 		});
-
-		if (error) {
-			this.logger.error(`ERROR TO SEND WELCOME EMAIL TO MAIL ${to.join(', ')}`, error);
-		}
-
-		this.logger.log(`WELCOME EMAIL SENDED TO ${to.join(', ')}`, data);
 	}
 
 	/**
@@ -55,8 +65,8 @@ export class MailerService {
 	 * @param {User} createdUser - The newly registered user.
 	 * @returns {Promise<void>}
 	 */
-	async sendWelcomeEmail(createdUser: User): Promise<void> {
-		await this.sendEmail({
+	sendWelcomeEmail(createdUser: User): void {
+		this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Welcome to Dona app',
 			html: WelcomeEmail.getTemplate(createdUser),
@@ -70,8 +80,8 @@ export class MailerService {
 	 * @param {string} emailVerificationToken - The verification token.
 	 * @returns {Promise<void>}
 	 */
-	async sendVerificationEmail(createdUser: User, emailVerificationToken: string): Promise<void> {
-		await this.sendEmail({
+	sendVerificationEmail(createdUser: User, emailVerificationToken: string): void {
+		this.sendEmail({
 			to: [createdUser.email],
 			subject: 'Verify your email',
 			html: VerifyEmail.getTemplate(createdUser, emailVerificationToken, this.uiUrl),
@@ -85,8 +95,8 @@ export class MailerService {
 	 * @param {string} resetPasswordToken - The password reset token.
 	 * @returns {Promise<void>}
 	 */
-	async sendResetPasswordEmail(user: User, resetPasswordToken: string): Promise<void> {
-		await this.sendEmail({
+	sendResetPasswordEmail(user: User, resetPasswordToken: string): void {
+		this.sendEmail({
 			to: [user.email],
 			subject: 'Reset your password',
 			html: ResetPasswordEmail.getTemplate(user, resetPasswordToken, this.uiUrl),

@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AuthRepository } from './auth.repository';
 import { Profile } from 'passport-google-oauth20';
+import { generateFromEmail } from 'unique-username-generator';
 import { User } from '../../../prisma/generated/client';
 import { UserCreateInput } from '../../../prisma/generated/models';
-import { generateFromEmail } from 'unique-username-generator';
 import { MailerService } from '../mailer/mailer.service';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthGoogleService {
@@ -40,7 +40,7 @@ export class AuthGoogleService {
 				isOAuthGoogleProvider: true,
 			};
 			const user = await this.authRepository.createUser(userToCreate);
-			await this.mailerService.sendWelcomeEmail(user);
+			this.mailerService.sendWelcomeEmail(user);
 			return user;
 		}
 	}

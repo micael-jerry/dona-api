@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'node:crypto';
 import { User } from '../../../prisma/generated/client';
-import { UserPayload } from './payload/user.payload';
-import { SpecialPayload, SpecialTokenPurpose } from './payload/special.payload';
 import { AuthRepository } from './auth.repository';
+import { SpecialPayload, SpecialTokenPurpose } from './payload/special.payload';
+import { UserPayload } from './payload/user.payload';
 
 @Injectable()
 export class AuthUtil {

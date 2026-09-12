@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from '../../db/db.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -20,6 +20,7 @@ interface RawEventResult {
 	resolutionsCount: number | string;
 	isOfficialValidated: boolean;
 	isOwner: boolean;
+	hasUserConfirmed: boolean;
 	ownerName: string | null;
 	ownerAvatarUrl: string | null;
 	reputationScore: number | string;
@@ -47,6 +48,7 @@ export class EventService {
 			confirmationsCount: Number(e.confirmationsCount),
 			resolutionsCount: Number(e.resolutionsCount),
 			isOfficialValidated: e.isOfficialValidated,
+			hasUserConfirmed: e.hasUserConfirmed,
 			createdAt: e.createdAt,
 			reportedBy: {
 				isOwner: e.isOwner,
@@ -60,14 +62,59 @@ export class EventService {
 	}
 
 	async create(userId: string, createEventDto: CreateEventDto): Promise<DonaEvent> {
-		const event = await this.db.event.create({
-			data: {
-				...createEventDto,
-				userId,
-			},
+		const event = await this.db.$transaction(async (transaction) => {
+			const newEvent = await transaction.event.create({
+				data: {
+					...createEventDto,
+					userId,
+				},
+			});
+
+			await transaction.userConfirmEvent.create({
+				data: {
+					userId,
+					eventId: newEvent.id,
+				},
+			});
+
+			return newEvent;
 		});
 
 		return this.findOnePersonalized(userId, event.id);
+	}
+
+	async confirmEvent(userId: string, eventId: string) {
+		const event = await this.db.event.findUnique({
+			where: { id: eventId },
+		});
+
+		if (!event) {
+			throw new NotFoundException("L'événement n'existe pas.");
+		}
+
+		if (event.userId === userId) {
+			throw new BadRequestException('Le créateur ne peut pas confirmer son propre événement.');
+		}
+
+		const existingConfirmation = await this.db.userConfirmEvent.findFirst({
+			where: {
+				userId,
+				eventId,
+			},
+		});
+
+		if (existingConfirmation) {
+			throw new ConflictException('Vous avez déjà marqué cet événement comme encore là.');
+		}
+
+		await this.db.userConfirmEvent.create({
+			data: {
+				userId,
+				eventId,
+			},
+		});
+
+		return this.findOnePersonalized(userId, eventId);
 	}
 
 	async findAll() {

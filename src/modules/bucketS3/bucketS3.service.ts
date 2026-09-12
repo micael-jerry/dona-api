@@ -3,12 +3,7 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
-
-export interface FileUploadPayload {
-	buffer: Buffer;
-	originalname?: string;
-	mimetype: string;
-}
+import { FileUploadPayload } from './payload/file-upload.payload';
 
 @Injectable()
 export class BucketS3Service {

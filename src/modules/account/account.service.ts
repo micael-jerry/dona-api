@@ -69,7 +69,7 @@ export class AccountService {
 
 		if (isEmailChanged) {
 			const token = await this.authUtil.genSpecialToken(updatedUser, SpecialTokenPurpose.VERIFY_EMAIL);
-			await this.mailerService.sendVerificationEmail(updatedUser, token);
+			this.mailerService.sendVerificationEmail(updatedUser, token);
 		}
 
 		return updatedUser;
@@ -112,7 +112,7 @@ export class AccountService {
 		}
 
 		const token = await this.authUtil.genSpecialToken(user, SpecialTokenPurpose.VERIFY_EMAIL);
-		await this.mailerService.sendVerificationEmail(user, token);
+		this.mailerService.sendVerificationEmail(user, token);
 
 		return {
 			message: 'Verification email sent successfully',

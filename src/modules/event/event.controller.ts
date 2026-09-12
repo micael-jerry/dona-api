@@ -31,6 +31,34 @@ export class EventController {
 
 	@Auth(AuthType.AUTHENTICATED)
 	@UseGuards(AppAuthGuard)
+	@Post(':id/confirm')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Confirm that an event is still present (Encore là)',
+	})
+	@ApiParam({ name: 'id', description: 'ID of the event to confirm' })
+	@ApiResponse({
+		status: HttpStatus.OK,
+		description: 'The event confirmation has been recorded successfully.',
+	})
+	@ApiResponse({
+		status: HttpStatus.BAD_REQUEST,
+		description: 'The owner cannot confirm their own event.',
+	})
+	@ApiResponse({
+		status: HttpStatus.CONFLICT,
+		description: 'User has already confirmed this event.',
+	})
+	@ApiResponse({
+		status: HttpStatus.NOT_FOUND,
+		description: 'Event not found.',
+	})
+	confirmEvent(@CurrentUser('id') userId: string, @Param('id') id: string) {
+		return this.eventsService.confirmEvent(userId, id);
+	}
+
+	@Auth(AuthType.AUTHENTICATED)
+	@UseGuards(AppAuthGuard)
 	@Get('dona')
 	@ApiOperation({ summary: 'Retrieve the list of all events' })
 	@ApiResponse({

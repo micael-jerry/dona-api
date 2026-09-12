@@ -45,6 +45,7 @@ export interface DonaEvent {
 	confirmationsCount: number;
 	resolutionsCount: number;
 	isOfficialValidated: boolean;
+	hasUserConfirmed: boolean;
 	createdAt: Date;
 	reportedBy: EventReportedBy;
 	imageUrl: string;

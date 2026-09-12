@@ -24,8 +24,6 @@ jobs:
       # JWT
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN }}
-      # Mailing
-      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       # Google
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
@@ -36,6 +34,11 @@ jobs:
       SUPABASE_S3_ACCESS_KEY_ID: ${{ secrets.SUPABASE_S3_ACCESS_KEY_ID }}
       SUPABASE_S3_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_S3_SECRET_ACCESS_KEY }}
       SUPABASE_S3_ENDPOINT: ${{ vars.SUPABASE_S3_ENDPOINT }}
+      # SMTP
+      SMTP_HOST: ${{ vars.SMTP_HOST }}
+      SMTP_PORT: ${{ vars.SMTP_PORT }}
+      SMTP_AUTH_USER: ${{ secrets.SMTP_AUTH_USER }}
+      SMTP_AUTH_PASS: ${{ secrets.SMTP_AUTH_PASS }}
 
     steps:
       - name: Checkout code

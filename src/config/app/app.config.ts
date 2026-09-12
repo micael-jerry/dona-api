@@ -12,9 +12,6 @@ export default registerAs('app', () => ({
 		secretKey: process.env.JWT_SECRET_KEY,
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	},
-	resend: {
-		apiKey: process.env.RESEND_API_KEY,
-	},
 	google: {
 		clientId: process.env.GOOGLE_CLIENT_ID,
 		clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -26,5 +23,13 @@ export default registerAs('app', () => ({
 		accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY_ID,
 		secretAccessKey: process.env.SUPABASE_S3_SECRET_ACCESS_KEY,
 		endpoint: process.env.SUPABASE_S3_ENDPOINT,
+	},
+	smtp: {
+		host: process.env.SMTP_HOST,
+		port: Number.parseInt(process.env.SMTP_PORT as string, 10),
+		auth: {
+			user: process.env.SMTP_AUTH_USER,
+			pass: process.env.SMTP_AUTH_PASS,
+		},
 	},
 }));

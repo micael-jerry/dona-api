@@ -40,7 +40,7 @@ export class AuthGoogleService {
 				isOAuthGoogleProvider: true,
 			};
 			const user = await this.authRepository.createUser(userToCreate);
-			await this.mailerService.sendWelcomeEmail(user);
+			this.mailerService.sendWelcomeEmail(user);
 			return user;
 		}
 	}

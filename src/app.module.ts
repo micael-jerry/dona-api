@@ -7,6 +7,7 @@ import { swaggerConfig } from './config/swagger';
 import { DbModule } from './db/db.module';
 import { AccountModule } from './modules/account/account.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { EventModule } from './modules/event/event.module';
 import { HealthModule } from './modules/health/health.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
 
@@ -35,6 +36,7 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
 		AuthModule,
 		AccountModule,
 		UserSettingsModule,
+		EventModule,
 	],
 })
 export class AppModule {}

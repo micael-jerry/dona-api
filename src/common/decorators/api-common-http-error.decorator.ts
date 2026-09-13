@@ -16,7 +16,7 @@ export function ApiCommonHttpErrorDecorator() {
 			example: {
 				status: HttpStatus.BAD_REQUEST,
 				type: 'BadRequestException',
-				message: 'Invalid request parameters',
+				message: ['Invalid request parameters'],
 				timestamp: new Date(),
 				path: '/example',
 			},
@@ -27,7 +27,7 @@ export function ApiCommonHttpErrorDecorator() {
 			example: {
 				status: HttpStatus.FORBIDDEN,
 				type: 'ForbiddenException',
-				message: 'Access to this resource is forbidden',
+				message: ['Access to this resource is forbidden'],
 				timestamp: new Date(),
 				path: '/example',
 			},
@@ -38,7 +38,7 @@ export function ApiCommonHttpErrorDecorator() {
 			example: {
 				status: HttpStatus.NOT_FOUND,
 				type: 'NotFoundException',
-				message: 'Resource not found',
+				message: ['Resource not found'],
 				timestamp: new Date(),
 				path: '/example',
 			},
@@ -49,7 +49,7 @@ export function ApiCommonHttpErrorDecorator() {
 			example: {
 				status: HttpStatus.TOO_MANY_REQUESTS,
 				type: 'TooManyRequestsException',
-				message: 'Too many requests, please try again later',
+				message: ['Too many requests, please try again later'],
 				timestamp: new Date(),
 				path: '/example',
 			},
@@ -60,7 +60,7 @@ export function ApiCommonHttpErrorDecorator() {
 			example: {
 				status: HttpStatus.INTERNAL_SERVER_ERROR,
 				type: 'InternalServerErrorException',
-				message: 'An unexpected error occurred',
+				message: ['An unexpected error occurred'],
 				timestamp: new Date(),
 				path: '/example',
 			},

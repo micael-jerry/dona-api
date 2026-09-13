@@ -165,8 +165,11 @@ export class AccountService {
 			}
 		}
 
-		if (user.avatar && user.avatar.startsWith(this.bucketS3Service.endpoint)) {
-			await this.bucketS3Service.deleteFile(user.avatar);
+		if (user.avatar) {
+			const url = new URL(user.avatar);
+			if (url.hostname === new URL(this.bucketS3Service.endpoint).hostname) {
+				await this.bucketS3Service.deleteFile(user.avatar);
+			}
 		}
 
 		await this.accountRepository.deleteUser(userId);

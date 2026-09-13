@@ -33,6 +33,9 @@ export class EventEntity implements Event {
 	@ApiProperty({ example: '123 Avenue des Champs-Élysées' })
 	address: string;
 
+	@ApiProperty({ example: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=600&auto=format&fit=crop' })
+	imageUrl: string | null;
+
 	@ApiProperty()
 	createdAt: Date;
 

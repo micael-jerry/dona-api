@@ -3,23 +3,17 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
-
-export interface FileUploadPayload {
-	buffer: Buffer;
-	originalname?: string;
-	mimetype: string;
-}
+import { FileUploadPayload } from './payload/file-upload.payload';
 
 @Injectable()
 export class BucketS3Service {
 	private readonly logger = new Logger(BucketS3Service.name);
-	private readonly bucketName: string;
+	private readonly bucketName: string = 'dona';
 	private readonly bucketRegion: string;
-	private readonly endpoint: string;
 	private readonly s3Client: S3Client;
+	readonly endpoint: string;
 
 	constructor(private readonly configService: ConfigService) {
-		this.bucketName = this.configService.getOrThrow<string>('app.bucketS3.name');
 		this.bucketRegion = this.configService.getOrThrow<string>('app.bucketS3.region');
 		this.endpoint = this.configService.getOrThrow<string>('app.bucketS3.endpoint');
 
@@ -72,15 +66,12 @@ export class BucketS3Service {
 	 * @param {string} fileUrlOrKey - Full URL or object Key of the file to delete.
 	 */
 	async deleteFile(fileUrlOrKey: string): Promise<void> {
-		if (!fileUrlOrKey) return;
+		const key: string = this.extractKeyFromUrlOrKey(fileUrlOrKey);
 
 		try {
-			const key = this.extractKeyFromUrlOrKey(fileUrlOrKey);
-			if (!key) return;
-
 			const command = new DeleteObjectCommand({
 				Bucket: this.bucketName,
-				Key: key,
+				Key: this.extractKeyFromUrlOrKey(fileUrlOrKey),
 			});
 
 			await this.s3Client.send(command);

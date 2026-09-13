@@ -15,11 +15,10 @@ export const envSchema = Joi.object({
 	GOOGLE_CLIENT_SECRET: Joi.string().required(),
 	GOOGLE_REDIRECT_URI: Joi.string().uri().required(),
 	// S3 BUCKET
-	SUPABASE_S3_BUCKET_NAME: Joi.string().required(),
-	SUPABASE_S3_REGION: Joi.string().required(),
-	SUPABASE_S3_ACCESS_KEY_ID: Joi.string().required(),
-	SUPABASE_S3_SECRET_ACCESS_KEY: Joi.string().required(),
-	SUPABASE_S3_ENDPOINT: Joi.string().uri().required(),
+	S3_REGION: Joi.string().required(),
+	S3_ACCESS_KEY_ID: Joi.string().required(),
+	S3_SECRET_ACCESS_KEY: Joi.string().required(),
+	S3_ENDPOINT: Joi.string().uri().required(),
 	// SMTP
 	SMTP_HOST: Joi.string().required(),
 	SMTP_PORT: Joi.number().required(),

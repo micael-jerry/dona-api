@@ -1,4 +1,11 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+	BadRequestException,
+	ConflictException,
+	ForbiddenException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
+import { UserRole } from '../../../prisma/generated/enums';
 import { DbService } from '../../db/db.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -233,7 +240,7 @@ export class EventService {
 		const event = await this.db.event.findUnique({
 			where: { id },
 			include: {
-				user: { select: { id: true, pseudo: true, avatar: true } },
+				user: { select: { id: true, pseudo: true, avatar: true, role: true } },
 				eventCategory: true,
 				confirmations: true,
 				resolutions: true,
@@ -247,16 +254,23 @@ export class EventService {
 		return event;
 	}
 
-	async update(id: string, updateEventDto: UpdateEventDto) {
-		await this.findOne(id);
+	async update(id: string, currentUserId: string, updateEventDto: UpdateEventDto) {
+		const data = await this.findOne(id);
+		console.log(data);
+		if (data.user.id != currentUserId) {
+			throw new ForbiddenException("You can not remove other user's event.");
+		}
 		return this.db.event.update({
 			where: { id },
 			data: updateEventDto,
 		});
 	}
 
-	async remove(id: string) {
-		await this.findOne(id);
+	async remove(id: string, currentUserId: string) {
+		const data = await this.findOne(id);
+		if (data.user.id != currentUserId && data.user.role != UserRole.ADMIN) {
+			throw new ForbiddenException("You can not remove other user's event.");
+		}
 		return this.db.event.delete({
 			where: { id },
 		});

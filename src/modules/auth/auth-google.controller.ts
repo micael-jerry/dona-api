@@ -26,8 +26,8 @@ export class AuthGoogleController {
 	})
 	@ApiResponse({ status: HttpStatus.FOUND, description: 'Redirects to Google OAuth consent screen' })
 	@ApiCommonHttpErrorDecorator()
-	@Get('login')
 	@UseGuards(LoginGoogleGuard)
+	@Get('login')
 	login() {
 		return;
 	}
@@ -42,8 +42,8 @@ export class AuthGoogleController {
 		description: 'Redirects to the UI with the JWT token as a query parameter (?token=...)',
 	})
 	@ApiCommonHttpErrorDecorator()
-	@Get('redirect')
 	@UseGuards(LoginGoogleGuard)
+	@Get('redirect')
 	async redirect(@CurrentUser() currentUser: UserPayload, @Res() response: Response): Promise<void> {
 		const token: string = await this.authUtil.genAuthToken(currentUser);
 		const url = new URL(`${this.uiUrl}/api/auth/google/callback`);

@@ -7,11 +7,8 @@ import { AUTH_TYPE_METADATA_KEY } from '../constants/auth-type-metadata-key.cons
 import { UserPayload } from '../payload/user.payload';
 import { AuthType } from '../types/auth.type';
 
-/**
- * Global authentication guard that verifies JWT tokens.
- * It checks the metadata set by the @Auth decorator and enforces access rules
- * (e.g., PUBLIC, ANONYMOUS, AUTHENTICATED).
- */
+// Global guard that runs on every request.
+// Reads the auth type set by @Auth() and decides whether to allow or block access.
 @Injectable()
 export class AppAuthGuard implements CanActivate {
 	constructor(
@@ -22,6 +19,7 @@ export class AppAuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const authType: AuthType | undefined = this.extractAuthType(context);
 
+		// If no @Auth() decorator was applied, we deny access by default
 		if (!authType) {
 			throw new ForbiddenException('Access Denied');
 		}
@@ -30,29 +28,44 @@ export class AppAuthGuard implements CanActivate {
 		const req: Request = httpArgumentsHost.getRequest<Request>();
 		const authHeader: string | undefined = req.headers.authorization;
 
-		if ((authType === AuthType.ANONYMOUS && !authHeader) || authType === AuthType.PUBLIC) {
+		if (authType === AuthType.ANONYMOUS) {
+			if (authHeader) {
+				throw new UnauthorizedException('Access Denied, Anonymous access is not allowed with authorization header');
+			}
 			return true;
-		} else if (authType === AuthType.ANONYMOUS && authHeader) {
-			throw new UnauthorizedException('Access Denied, Anonymous access is not allowed with authorization header');
-		} else if (!authHeader) {
+		}
+
+		if (!authHeader) {
+			if (authType === AuthType.PUBLIC) {
+				return true;
+			}
 			throw new UnauthorizedException('Access Denied, Authorization header is required');
 		}
 
 		const [type, token]: string[] = authHeader.split(' ');
 
 		if (type.toLowerCase() !== 'bearer' || !token) {
+			if (authType === AuthType.PUBLIC) {
+				return true;
+			}
 			throw new UnauthorizedException('Access Denied, Invalid token format');
 		}
 
 		try {
 			const user: UserPayload | undefined = await this.authUtil.verifyToken<UserPayload>(token);
 			if (!user) {
+				if (authType === AuthType.PUBLIC) {
+					return true;
+				}
 				throw new UnauthorizedException('Access Denied, Invalid token');
 			}
 
 			req.user = user;
 			return true;
 		} catch {
+			if (authType === AuthType.PUBLIC) {
+				return true;
+			}
 			throw new UnauthorizedException('Access Denied, Invalid token');
 		}
 	}

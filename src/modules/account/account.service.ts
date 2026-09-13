@@ -86,10 +86,8 @@ export class AccountService {
 	async updateAvatar(userId: string, file: Express.Multer.File): Promise<User> {
 		const currentUser = await this.accountRepository.findById(userId);
 
-		// Upload file to Supabase S3 bucket in 'avatars' folder
 		const avatarUrl = await this.bucketS3Service.uploadFile(file, 'avatars');
 
-		// Cleanup old avatar if it was stored in our Supabase S3 bucket
 		if (currentUser.avatar && currentUser.avatar.includes('/object/public/')) {
 			await this.bucketS3Service.deleteFile(currentUser.avatar);
 		}
@@ -167,9 +165,11 @@ export class AccountService {
 			}
 		}
 
-		// Delete avatar from S3 if present
-		if (user.avatar && user.avatar.includes('/object/public/')) {
-			await this.bucketS3Service.deleteFile(user.avatar);
+		if (user.avatar) {
+			const url = new URL(user.avatar);
+			if (url.hostname === new URL(this.bucketS3Service.endpoint).hostname) {
+				await this.bucketS3Service.deleteFile(user.avatar);
+			}
 		}
 
 		await this.accountRepository.deleteUser(userId);

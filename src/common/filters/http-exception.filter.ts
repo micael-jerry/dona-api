@@ -13,7 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const exceptionResponse: HttpExceptionResponse = {
 			status: status,
 			type: exception.name,
-			message: exception.message,
+			message: (exception.getResponse() as { message: string[] }).message || [exception.message],
 			timestamp: new Date(),
 			path: request.url,
 		};

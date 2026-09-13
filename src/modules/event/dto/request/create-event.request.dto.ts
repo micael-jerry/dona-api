@@ -1,15 +1,25 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsLatitude, IsLongitude, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import { EventSeverity } from '../../../../prisma/generated/enums';
+import {
+	IsDateString,
+	IsEnum,
+	IsLatitude,
+	IsLongitude,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	IsUrl,
+	MaxLength,
+} from 'class-validator';
+import { EventSeverity } from '../../../../../prisma/generated/enums';
 
-export class CreateEventDto {
+export class CreateEventRequest {
 	@ApiProperty({
 		description: 'Event category ID',
-		example: 'clx1234567890abcdef',
+		example: 'cat_accident_01',
 	})
 	@IsString()
 	@IsNotEmpty()
-	eventCategoryId: string;
+	eventCategoryId!: string;
 
 	@ApiProperty({
 		description: 'Event title',
@@ -19,7 +29,7 @@ export class CreateEventDto {
 	@IsString()
 	@IsNotEmpty()
 	@MaxLength(150)
-	title: string;
+	title!: string;
 
 	@ApiProperty({
 		description: 'Event description',
@@ -27,7 +37,7 @@ export class CreateEventDto {
 	})
 	@IsString()
 	@IsNotEmpty()
-	description: string;
+	description!: string;
 
 	@ApiProperty({
 		description: 'Physical address or approximate location',
@@ -37,7 +47,7 @@ export class CreateEventDto {
 	@IsString()
 	@IsNotEmpty()
 	@MaxLength(255)
-	address: string;
+	address!: string;
 
 	@ApiProperty({
 		description: 'GPS latitude',
@@ -45,7 +55,7 @@ export class CreateEventDto {
 	})
 	@IsLatitude()
 	@IsNotEmpty()
-	latitude: number;
+	latitude!: number;
 
 	@ApiProperty({
 		description: 'GPS longitude',
@@ -53,14 +63,30 @@ export class CreateEventDto {
 	})
 	@IsLongitude()
 	@IsNotEmpty()
-	longitude: number;
+	longitude!: number;
 
 	@ApiPropertyOptional({
-		description: 'Event severity',
+		description: 'Event severity level',
 		enum: EventSeverity,
 		default: EventSeverity.LOW,
 	})
 	@IsEnum(EventSeverity)
 	@IsOptional()
 	severity?: EventSeverity;
+
+	@ApiPropertyOptional({
+		description: 'Optional photo URL of the incident',
+		example: 'https://images.unsplash.com/photo-1563720223185-11003d516935',
+	})
+	@IsUrl()
+	@IsOptional()
+	imageUrl?: string;
+
+	@ApiPropertyOptional({
+		description: 'Optional expiration timestamp',
+		example: '2026-09-13T22:00:00.000Z',
+	})
+	@IsDateString()
+	@IsOptional()
+	expiresAt?: Date;
 }

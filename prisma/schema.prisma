@@ -101,11 +101,10 @@ model Event {
   latitude  Float
   longitude Float
 
-  title       String  @db.VarChar(150)
-  description String  @db.Text
-  address     String  @db.VarChar(255)
-  imageUrl    String? @db.VarChar(500)
-  // expiresAt   DateTime? // 💡 Permet l'auto-expiration (ex: 2h après création)
+  title       String    @db.VarChar(150)
+  description String    @db.Text
+  address     String    @db.VarChar(255)
+  imageUrl    String?   @db.VarChar(500)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

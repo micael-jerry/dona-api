@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { EventService } from './event.service';
+import { DbModule } from '../../db/db.module';
 import { EventController } from './event.controller';
-import { DbModule } from '../../db/db.module'; // Ajustez le chemin vers votre PrismaModule[cite: 1]
+import { EventRepository } from './event.repository';
+import { EventService } from './event.service';
 
 @Module({
 	imports: [DbModule],
 	controllers: [EventController],
-	providers: [EventService],
-	exports: [EventService],
+	providers: [EventRepository, EventService],
+	exports: [EventRepository, EventService],
 })
 export class EventModule {}

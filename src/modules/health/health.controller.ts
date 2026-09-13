@@ -1,11 +1,12 @@
 import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { AuthType } from '../auth/types/auth.type';
 import { PingRequest } from './dto/ping-request.dto';
 import { PingResponse } from './dto/ping-response.dto';
 import { HealthService } from './health.service';
 
+@ApiTags('Health')
 @Controller()
 export class HealthController {
 	constructor(private readonly healthService: HealthService) {}
@@ -19,8 +20,8 @@ export class HealthController {
 		type: PingResponse,
 		description: 'Service is running',
 	})
-	@Get('ping')
 	@Auth(AuthType.PUBLIC)
+	@Get('ping')
 	ping(@Query() pingRequest: PingRequest): PingResponse {
 		return this.healthService.handlePingRequest(pingRequest);
 	}

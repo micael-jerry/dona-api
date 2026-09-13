@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../../../prisma/generated/client';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { UserResponse } from '../user/dto/user-response.dto';
@@ -20,6 +20,7 @@ import { LoginLocalGuard } from './guards/login-local.guard';
 import { UserPayload } from './payload/user.payload';
 import { AuthType } from './types/auth.type';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
 	constructor(
@@ -46,8 +47,8 @@ export class AuthController {
 	@ApiBody({ type: LoginRequest })
 	@ApiResponse({ status: HttpStatus.OK, type: LoginResponse, description: 'User successfully logged in' })
 	@ApiCommonHttpErrorDecorator()
-	@Post('login')
 	@UseGuards(LoginLocalGuard)
+	@Post('login')
 	async login(@CurrentUser() currentUser: UserPayload): Promise<LoginResponse> {
 		const { token, user } = await this.authService.login(currentUser);
 		return { token, user: UserMapper.toDto(user) };
@@ -57,10 +58,11 @@ export class AuthController {
 		summary: 'Get current user information',
 		description: 'Returns the information of the currently authenticated user.',
 	})
+	@ApiBearerAuth()
 	@ApiResponse({ status: HttpStatus.OK, type: UserResponse, description: 'Current user information' })
 	@ApiCommonHttpErrorDecorator()
-	@Get('whoami')
 	@Auth(AuthType.AUTHENTICATED)
+	@Get('whoami')
 	async whoami(@CurrentUser() { id }: UserPayload): Promise<UserResponse> {
 		const user: User = await this.userService.getById(id);
 

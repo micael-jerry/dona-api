@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiCommonHttpErrorDecorator } from '../../common/decorators/api-common-http-error.decorator';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -13,16 +13,20 @@ import { EventService } from './event.service';
 export class EventController {
 	constructor(private readonly eventsService: EventService) {}
 
-	@Auth(AuthType.AUTHENTICATED)
-	@Post()
+	@ApiOperation({
+		summary: 'Create a new event',
+		description: 'Creates a new signalment on the map with location and category.',
+	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Create a new event' })
+	@ApiBody({ type: CreateEventRequest })
 	@ApiResponse({
 		status: HttpStatus.CREATED,
 		description: 'The event has been created successfully.',
 		type: DonaEventResponseDto,
 	})
 	@ApiCommonHttpErrorDecorator()
+	@Auth(AuthType.AUTHENTICATED)
+	@Post()
 	create(
 		@CurrentUser() { id }: UserPayload,
 		@Body() createEventDto: CreateEventRequest,
@@ -30,13 +34,11 @@ export class EventController {
 		return this.eventsService.create(id, createEventDto);
 	}
 
-	@Auth(AuthType.AUTHENTICATED)
-	@Post(':id/confirm')
-	@HttpCode(HttpStatus.OK)
-	@ApiBearerAuth()
 	@ApiOperation({
 		summary: 'Confirm that an event is still present (Still there)',
+		description: 'Increments the confirmation count for an active event.',
 	})
+	@ApiBearerAuth()
 	@ApiParam({ name: 'id', description: 'ID of the event to confirm' })
 	@ApiResponse({
 		status: HttpStatus.OK,
@@ -56,6 +58,9 @@ export class EventController {
 		description: 'Event not found.',
 	})
 	@ApiCommonHttpErrorDecorator()
+	@Auth(AuthType.AUTHENTICATED)
+	@HttpCode(HttpStatus.OK)
+	@Post(':id/confirm')
 	confirmEvent(
 		@CurrentUser() { id: userId }: UserPayload,
 		@Param('id') eventId: string,
@@ -63,35 +68,26 @@ export class EventController {
 		return this.eventsService.confirmEvent(userId, eventId);
 	}
 
-	@Auth(AuthType.PUBLIC)
-	@Get()
-	@ApiOperation({ summary: 'Retrieve all events for the interactive map' })
+	@ApiOperation({
+		summary: 'Retrieve all events for the interactive map',
+		description: 'Fetches active events within the platform, personalized if a valid Bearer token is provided.',
+	})
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: 'List of events retrieved successfully.',
 		type: [DonaEventResponseDto],
 	})
 	@ApiCommonHttpErrorDecorator()
+	@Auth(AuthType.PUBLIC)
+	@Get()
 	findAll(@CurrentUser() user?: UserPayload): Promise<DonaEventResponseDto[]> {
 		return this.eventsService.findAllPersonalized(user?.id ?? null);
 	}
 
-	@Auth(AuthType.PUBLIC)
-	@Get('dona')
-	@ApiOperation({ summary: 'Retrieve all events for the interactive map (alias)' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'List of events retrieved successfully.',
-		type: [DonaEventResponseDto],
+	@ApiOperation({
+		summary: 'Retrieve a single event by its ID',
+		description: 'Retrieves complete event details, personalized if a valid Bearer token is provided.',
 	})
-	@ApiCommonHttpErrorDecorator()
-	findAllPersonalized(@CurrentUser() user?: UserPayload): Promise<DonaEventResponseDto[]> {
-		return this.eventsService.findAllPersonalized(user?.id ?? null);
-	}
-
-	@Auth(AuthType.PUBLIC)
-	@Get('dona/:id')
-	@ApiOperation({ summary: 'Retrieve a single event by ID (alias)' })
 	@ApiParam({ name: 'id', description: 'ID of the event' })
 	@ApiResponse({
 		status: HttpStatus.OK,
@@ -103,36 +99,19 @@ export class EventController {
 		description: 'Event not found.',
 	})
 	@ApiCommonHttpErrorDecorator()
-	findOnePersonalizedAlias(
-		@CurrentUser() user: UserPayload | undefined,
-		@Param('id') id: string,
-	): Promise<DonaEventResponseDto> {
-		return this.eventsService.findOnePersonalized(id, user?.id ?? null);
-	}
-
 	@Auth(AuthType.PUBLIC)
 	@Get(':id')
-	@ApiOperation({ summary: 'Retrieve a single event by its ID' })
-	@ApiParam({ name: 'id', description: 'ID of the event' })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		description: 'Event retrieved successfully.',
-		type: DonaEventResponseDto,
-	})
-	@ApiResponse({
-		status: HttpStatus.NOT_FOUND,
-		description: 'Event not found.',
-	})
-	@ApiCommonHttpErrorDecorator()
 	findOne(@CurrentUser() user: UserPayload | undefined, @Param('id') id: string): Promise<DonaEventResponseDto> {
 		return this.eventsService.findOnePersonalized(id, user?.id ?? null);
 	}
 
-	@Auth(AuthType.AUTHENTICATED)
-	@Patch(':id')
+	@ApiOperation({
+		summary: 'Update an event (author or admin only)',
+		description: 'Modifies fields of an existing event. Only the author or an admin can perform this operation.',
+	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Update an event (author or admin only)' })
 	@ApiParam({ name: 'id', description: 'ID of the event' })
+	@ApiBody({ type: UpdateEventRequest })
 	@ApiResponse({
 		status: HttpStatus.OK,
 		description: 'The event has been updated successfully.',
@@ -147,6 +126,8 @@ export class EventController {
 		description: 'Event not found.',
 	})
 	@ApiCommonHttpErrorDecorator()
+	@Auth(AuthType.AUTHENTICATED)
+	@Patch(':id')
 	update(
 		@CurrentUser() user: UserPayload,
 		@Param('id') id: string,
@@ -155,10 +136,11 @@ export class EventController {
 		return this.eventsService.update(user.id, id, updateEventDto, user.role);
 	}
 
-	@Auth(AuthType.AUTHENTICATED)
-	@Delete(':id')
+	@ApiOperation({
+		summary: 'Delete an event (author or admin only)',
+		description: 'Removes an event from the map. Only the author or an admin can perform this operation.',
+	})
 	@ApiBearerAuth()
-	@ApiOperation({ summary: 'Delete an event (author or admin only)' })
 	@ApiParam({ name: 'id', description: 'ID of the event' })
 	@ApiResponse({
 		status: HttpStatus.OK,
@@ -174,6 +156,8 @@ export class EventController {
 		description: 'Event not found.',
 	})
 	@ApiCommonHttpErrorDecorator()
+	@Auth(AuthType.AUTHENTICATED)
+	@Delete(':id')
 	remove(@CurrentUser() user: UserPayload, @Param('id') id: string): Promise<DeleteEventResponse> {
 		return this.eventsService.remove(user.id, id, user.role);
 	}

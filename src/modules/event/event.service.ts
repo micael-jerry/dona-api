@@ -158,6 +158,7 @@ export class EventService {
         COALESCE(ecc.quantity::DECIMAL, 0) AS "confirmationsCount",
         COALESCE(erc.quantity::DECIMAL, 0) AS "resolutionsCount",
         CASE WHEN COALESCE(ecc.quantity::DECIMAL, 0) >= 3 THEN TRUE ELSE FALSE END AS "isOfficialValidated",
+				CASE WHEN uce.id IS NOT NULL THEN TRUE ELSE FALSE END AS "hasUserConfirmed",
         CASE WHEN u.id = ${userId} THEN TRUE ELSE FALSE END AS "isOwner",
         u.name AS "ownerName",
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop' AS "ownerAvatarUrl",
@@ -166,6 +167,7 @@ export class EventService {
       FROM events e
         LEFT JOIN "User" u ON u.id = e."userId"
         LEFT JOIN event_categories ec ON ec.id = e."eventCategoryId"
+				LEFT JOIN user_confirm_events uce ON uce."eventId" = e.id AND uce."userId" = ${userId}
         LEFT JOIN event_confirmations_count ecc ON ecc."eventId" = e.id
         LEFT JOIN event_resolutions_count erc ON erc."eventId" = e.id
         LEFT JOIN user_confirmations_count ucc ON ucc."userId" = u.id
@@ -202,6 +204,7 @@ export class EventService {
         COALESCE(ecc.quantity::DECIMAL, 0) AS "confirmationsCount",
         COALESCE(erc.quantity::DECIMAL, 0) AS "resolutionsCount",
         CASE WHEN COALESCE(ecc.quantity::DECIMAL, 0) >= 3 THEN TRUE ELSE FALSE END AS "isOfficialValidated",
+				CASE WHEN uce.id IS NOT NULL THEN TRUE ELSE FALSE END AS "hasUserConfirmed",
         CASE WHEN u.id = ${userId} THEN TRUE ELSE FALSE END AS "isOwner",
         u.name AS "ownerName",
         'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop' AS "ownerAvatarUrl",
@@ -210,6 +213,7 @@ export class EventService {
       FROM events e
         LEFT JOIN "User" u ON u.id = e."userId"
         LEFT JOIN event_categories ec ON ec.id = e."eventCategoryId"
+				LEFT JOIN user_confirm_events uce ON uce."eventId" = e.id AND uce."userId" = ${userId}
         LEFT JOIN event_confirmations_count ecc ON ecc."eventId" = e.id
         LEFT JOIN event_resolutions_count erc ON erc."eventId" = e.id
         LEFT JOIN user_confirmations_count ucc ON ucc."userId" = u.id
